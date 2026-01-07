@@ -20,10 +20,13 @@ export function TrackingPage() {
     retry: false
   });
   useEffect(() => {
-    if (order && order.trackingId && !history.includes(order.trackingId)) {
-      setHistory(prev => [order.trackingId, ...prev].slice(0, 3));
+    if (order && order.trackingId) {
+      setHistory(prev => {
+        if (prev.includes(order.trackingId)) return prev;
+        return [order.trackingId, ...prev].slice(0, 3);
+      });
     }
-  }, [order, history]);
+  }, [order]);
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchVal.trim()) {
@@ -108,7 +111,7 @@ export function TrackingPage() {
             >
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-8 bg-cyan-500 rounded-3xl text-white shadow-2xl cyan-glow">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-2">Cluster Node: Gamma-9</div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80 mb-2">Simulated Cluster Node: Gamma-9</div>
                   <h2 className="text-3xl font-display font-bold">Session Overview</h2>
                 </div>
                 <div className="text-left md:text-right">

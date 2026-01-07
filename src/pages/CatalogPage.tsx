@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getServices, getCategories } from '@/lib/api-client';
 import { Navbar } from '@/components/layout/Navbar';
@@ -37,9 +38,19 @@ const ICON_MAP: Record<string, any> = {
 };
 type SortOption = 'price-asc' | 'price-desc' | 'speed-asc';
 export function CatalogPage() {
-  const [search, setSearch] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('q') || '');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    searchParams.getAll('category')
+  );
   const [sortBy, setSortBy] = useState<SortOption>('price-asc');
+  // Sync state with URL changes (e.g., searching from Navbar)
+  useEffect(() => {
+    const q = searchParams.get('q') || '';
+    const cats = searchParams.getAll('category');
+    setSearch(q);
+    setSelectedCategories(cats);
+  }, [searchParams]);
   const { data: services, isLoading: loadingServices } = useQuery<Service[]>({
     queryKey: ['services', search, selectedCategories],
     queryFn: () => getServices({ q: search, category: selectedCategories.length > 0 ? selectedCategories : undefined }),
@@ -48,10 +59,27 @@ export function CatalogPage() {
     queryKey: ['categories'],
     queryFn: getCategories,
   });
+  const updateURL = (newSearch: string, newCats: string[]) => {
+    const params = new URLSearchParams();
+    if (newSearch) params.set('q', newSearch);
+    newCats.forEach(c => params.append('category', c));
+    setSearchParams(params);
+  };
   const toggleCategory = (id: string) => {
-    setSelectedCategories(prev => 
-      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
-    );
+    const next = selectedCategories.includes(id) 
+      ? selectedCategories.filter(c => c !== id) 
+      : [...selectedCategories, id];
+    setSelectedCategories(next);
+    updateURL(search, next);
+  };
+  const handleSearchChange = (val: string) => {
+    setSearch(val);
+    // Debounce or immediate URL update? For this UI, immediate is fine or sync on blur/enter.
+    // Let's sync with a small timeout or just keep local until query triggers.
+  };
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateURL(search, selectedCategories);
   };
   const sortedServices = useMemo(() => {
     if (!services) return [];
@@ -71,12 +99,15 @@ export function CatalogPage() {
   const FilterList = ({ mobile = false }: { mobile?: boolean }) => (
     <div className={cn("space-y-2", mobile && "grid grid-cols-2 gap-3 space-y-0")}>
       <button
-        onClick={() => setSelectedCategories([])}
+        onClick={() => {
+          setSelectedCategories([]);
+          updateURL(search, []);
+        }}
         className={cn(
           "flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all border",
           mobile ? "col-span-2" : "w-full",
-          selectedCategories.length === 0 
-            ? 'bg-cyan-500 text-white border-cyan-500 shadow-lg shadow-cyan-500/20' 
+          selectedCategories.length === 0
+            ? 'bg-cyan-500 text-white border-cyan-500 shadow-lg shadow-cyan-500/20'
             : 'bg-background border-slate-200 dark:border-slate-800 text-muted-foreground hover:border-cyan-500/50 hover:text-cyan-500'
         )}
       >
@@ -87,15 +118,15 @@ export function CatalogPage() {
       ) : (
         categories?.map((cat) => {
           const Icon = ICON_MAP[cat.iconName] || Smartphone;
-          const isActive = selectedCategories.includes(cat.id);
+          const isActive = selectedCategories.includes(cat.id) || selectedCategories.includes(cat.slug);
           return (
             <button
               key={cat.id}
-              onClick={() => toggleCategory(cat.id)}
+              onClick={() => toggleCategory(cat.slug)}
               className={cn(
                 "flex items-center gap-2 px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-tighter transition-all border text-left",
-                isActive 
-                  ? 'bg-cyan-500 text-white border-cyan-500 shadow-md shadow-cyan-500/10' 
+                isActive
+                  ? 'bg-cyan-500 text-white border-cyan-500 shadow-md shadow-cyan-500/10'
                   : 'bg-background border-slate-200 dark:border-slate-800 text-muted-foreground hover:border-cyan-500/30 hover:text-foreground'
               )}
             >
@@ -136,15 +167,15 @@ export function CatalogPage() {
           <main className="flex-1 space-y-6 w-full">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row gap-3 items-center glass-premium p-3 rounded-2xl border shadow-sm">
-                <div className="relative flex-1 w-full">
+                <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search model or IMEI..."
                     className="pl-12 h-12 border-none bg-slate-100 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-cyan-500/20 rounded-xl text-sm"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                   />
-                </div>
+                </form>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                     <SelectTrigger className="h-12 w-full sm:w-[160px] rounded-xl bg-slate-100 dark:bg-slate-800/50 border-none text-xs font-bold uppercase tracking-widest focus:ring-cyan-500/20">
@@ -171,9 +202,6 @@ export function CatalogPage() {
                           <Layers className="w-5 h-5 text-cyan-500" />
                           Service Filters
                         </SheetTitle>
-                        <SheetDescription className="sr-only">
-                          Select one or more categories to filter the service catalog.
-                        </SheetDescription>
                       </SheetHeader>
                       <FilterList mobile />
                     </SheetContent>
@@ -184,7 +212,7 @@ export function CatalogPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   {selectedCategories.map(catId => (
                     <Badge key={catId} className="bg-cyan-500 text-white gap-1 pl-3 pr-1 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider">
-                      {categories?.find(c => c.id === catId)?.name}
+                      {categories?.find(c => c.id === catId || c.slug === catId)?.name || catId}
                       <button onClick={() => toggleCategory(catId)} className="hover:bg-white/20 rounded-full p-0.5">
                         <X className="w-3 h-3" />
                       </button>
@@ -193,14 +221,14 @@ export function CatalogPage() {
                   {search && (
                     <Badge variant="outline" className="gap-1 pl-3 pr-1 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-slate-900">
                       Search: {search}
-                      <button onClick={() => setSearch('')} className="hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full p-0.5">
+                      <button onClick={() => { setSearch(''); updateURL('', selectedCategories); }} className="hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full p-0.5">
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {(selectedCategories.length > 0 || search) && (
-                    <button 
-                      onClick={() => { setSelectedCategories([]); setSearch(''); }}
+                    <button
+                      onClick={() => { setSelectedCategories([]); setSearch(''); updateURL('', []); }}
                       className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-cyan-500 px-2"
                     >
                       Clear All
@@ -231,7 +259,7 @@ export function CatalogPage() {
                   </p>
                   <Button
                     variant="link"
-                    onClick={() => { setSearch(''); setSelectedCategories([]); }}
+                    onClick={() => { setSearch(''); setSelectedCategories([]); updateURL('', []); }}
                     className="mt-4 text-cyan-600 font-bold"
                   >
                     Reset All Filters
