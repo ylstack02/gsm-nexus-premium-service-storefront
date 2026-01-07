@@ -1,10 +1,8 @@
 import { ApiResponse, Service, ServiceCategory, Order } from "../../shared/types"
 import { MOCK_SERVICES, MOCK_CATEGORIES } from "../../shared/mock-data"
-
 const SIMULATED_DELAY = 600;
 // Internal mock state for orders
 const MOCK_ORDERS: Order[] = [];
-
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY));
   if (Math.random() < 0.005) {
@@ -12,13 +10,11 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   }
   const url = new URL(path, window.location.origin);
   const pathname = url.pathname;
-  
   // GET /api/services
   if (pathname === '/api/services') {
     const categories = url.searchParams.getAll('category');
     const query = url.searchParams.get('q')?.toLowerCase();
     let results = [...MOCK_SERVICES];
-    
     if (categories.length > 0) {
       results = results.filter(s => {
         const category = MOCK_CATEGORIES.find(c => c.id === s.categoryId);
@@ -27,7 +23,6 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
                (category && categories.includes(category.slug));
       });
     }
-    
     if (query && query.trim()) {
       results = results.filter(s =>
         s.name.toLowerCase().includes(query) ||
@@ -37,12 +32,10 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     }
     return results as unknown as T;
   }
-  
   // GET /api/categories
   if (pathname === '/api/categories') {
     return MOCK_CATEGORIES as unknown as T;
   }
-  
   // GET /api/services/:id
   if (pathname.startsWith('/api/services/')) {
     const id = pathname.split('/').pop();
@@ -50,7 +43,6 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     if (!service) throw new Error('Service not found');
     return service as unknown as T;
   }
-  
   // POST /api/orders
   if (pathname === '/api/orders' && init?.method === 'POST') {
     const body = JSON.parse(init.body as string);
@@ -67,7 +59,6 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     MOCK_ORDERS.push(newOrder);
     return newOrder as unknown as T;
   }
-  
   // GET /api/orders/:trackingId
   if (pathname.startsWith('/api/orders/')) {
     const idOrTracking = pathname.split('/').pop();
@@ -75,7 +66,6 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     if (!order) throw new Error('Order not found');
     return order as unknown as T;
   }
-  
   // Fallback to real fetch
   const res = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -87,7 +77,6 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   }
   return json.data;
 }
-
 export const getServices = (params?: { category?: string | string[]; q?: string }) => {
   const query = new URLSearchParams();
   if (params?.category) {
@@ -103,6 +92,11 @@ export const getServices = (params?: { category?: string | string[]; q?: string 
   const queryString = query.toString();
   return api<Service[]>(`/api/services${queryString ? `?${queryString}` : ''}`);
 };
-
 export const getCategories = () => api<ServiceCategory[]>('/api/categories');
-//
+export const getServiceById = (id: string) => api<Service>(`/api/services/${id}`);
+export const createOrder = (orderData: { customerEmail: string; serviceId: string; formData: Record<string, string> }) => 
+  api<Order>('/api/orders', {
+    method: 'POST',
+    body: JSON.stringify(orderData)
+  });
+export const getOrderByTrackingId = (id: string) => api<Order>(`/api/orders/${id}`);

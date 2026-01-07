@@ -14,6 +14,7 @@ import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight, Zap } from 'lu
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Order } from '@shared/types';
 export function CheckoutPage() {
   const cart = useStore(s => s.cart);
   const clearCart = useStore(s => s.clearCart);
@@ -22,8 +23,8 @@ export function CheckoutPage() {
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card');
-  const mutation = useMutation({
-    mutationFn: (data: { email: string; items: typeof cart }) => {
+  const mutation = useMutation<Order, Error, { email: string; items: typeof cart }>({
+    mutationFn: (data) => {
       const item = data.items[0];
       return createOrder({
         customerEmail: data.email,
@@ -37,7 +38,7 @@ export function CheckoutPage() {
       toast.success('Transaction Successful');
     },
     onError: (error) => {
-      toast.error('Processing error: ' + (error as Error).message);
+      toast.error('Processing error: ' + error.message);
     }
   });
   const handlePlaceOrder = (e: React.FormEvent) => {
@@ -83,7 +84,7 @@ export function CheckoutPage() {
           <div className="glass-premium rounded-3xl p-10 mb-10 shadow-2xl relative">
             <div className="absolute top-4 right-4 text-[10px] font-mono text-cyan-500/50 uppercase tracking-widest">Global Order ID</div>
             <div className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-3">Your Tracking ID</div>
-            <div className="text-5xl font-mono font-bold text-cyan-600">{lastOrderId}</div>
+            <div className="text-5xl font-mono font-bold text-cyan-600">{lastOrderId ?? "N/A"}</div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={`/track?id=${lastOrderId}`}>

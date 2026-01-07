@@ -8,12 +8,13 @@ import { useQuery } from '@tanstack/react-query';
 import { getOrderByTrackingId } from '@/lib/api-client';
 import { Search, AlertCircle, FileSearch, History, ShieldCheck, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Order } from '@shared/types';
 export function TrackingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialId = searchParams.get('id') || '';
   const [searchVal, setSearchVal] = useState(initialId);
   const [history, setHistory] = useState<string[]>([]);
-  const { data: order, isLoading, isError, refetch } = useQuery({
+  const { data: order, isLoading, isError, refetch } = useQuery<Order, Error>({
     queryKey: ['order', initialId],
     queryFn: () => getOrderByTrackingId(initialId),
     enabled: !!initialId,
@@ -140,7 +141,7 @@ export function TrackingPage() {
                       </div>
                       <div className="flex flex-col gap-1">
                         <span className="text-[10px] font-bold uppercase text-muted-foreground">Encrypted Channel</span>
-                        <span className="font-medium flex items-center gap-2">
+                        <span className="font-medium flex items-center gap-2 truncate">
                           {order.customerEmail}
                         </span>
                       </div>
