@@ -14,16 +14,16 @@ export function Hero() {
   }, []);
   return (
     <section className="relative pt-20 pb-24 md:pt-32 md:pb-40 overflow-hidden">
-      {/* Background Glows */}
+      {/* Background Glows with Mesh Depth */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], x: [0, 50, 0] }}
         transition={{ duration: 20, repeat: Infinity }}
-        className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"
+        className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none opacity-60"
       />
       <motion.div
         animate={{ scale: [1, 1.3, 1], x: [0, -40, 0] }}
         transition={{ duration: 15, repeat: Infinity }}
-        className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none"
+        className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none opacity-40"
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -72,7 +72,7 @@ export function Hero() {
             <div className="mt-12 flex items-center gap-6">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-slate-200 overflow-hidden">
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-slate-200 overflow-hidden ring-2 ring-cyan-500/10">
                     <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=nexus-${i}`} alt="User" />
                   </div>
                 ))}
@@ -102,30 +102,34 @@ export function Hero() {
                   <Terminal className="w-5 h-5 text-cyan-500 mt-1" />
                   <div className="font-mono text-sm">
                     <p className="text-cyan-500">$ nexus init --secure</p>
-                    <p className="text-muted-foreground mt-1">Establishing encrypted tunnel...</p>
-                    <p className="text-cyan-400 mt-1">[OK] Gateway: Secure GSM Gateway Alpha</p>
+                    <p className="text-muted-foreground mt-1">Verifying RSA Signature...</p>
+                    <p className="text-cyan-400 mt-1">[OK] Handshake: Node-Global-7</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <Globe className="w-5 h-5 text-blue-500 mt-1" />
                   <div className="font-mono text-sm">
-                    <p className="text-blue-500">$ check --imei=352932...</p>
-                    <p className="text-muted-foreground mt-1">Database sync in progress...</p>
-                    <p className="text-emerald-500 mt-1">[ELIGIBLE] Device: Clean / Auth OK</p>
+                    <p className="text-blue-500">$ check --gateway=apple_primary</p>
+                    <p className="text-muted-foreground mt-1">Carrier DB sync in progress...</p>
+                    <p className="text-emerald-500 mt-1">[ACTIVE] Node latency: minimal</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <Cpu className="w-5 h-5 text-indigo-500 mt-1" />
                   <div className="font-mono text-sm">
-                    <p className="text-indigo-500">$ start --service=frp-samsung</p>
-                    <p className="text-muted-foreground mt-1">Status: <span className="text-amber-500 animate-pulse">Running</span></p>
+                    <p className="text-indigo-500">$ monitor --id=NEX-782193</p>
+                    <p className="text-muted-foreground mt-1">Status: <span className="text-amber-500 animate-pulse">Processing...</span></p>
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-4 -right-4 bg-cyan-500 p-5 rounded-2xl shadow-xl transform rotate-2 transition-transform group-hover:rotate-0">
+              <motion.div 
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -bottom-4 -right-4 bg-cyan-500 p-5 rounded-2xl shadow-xl transform rotate-2"
+              >
                 <div className="text-white text-[10px] font-bold uppercase tracking-widest mb-1">Latency</div>
                 <div className="text-white text-xl font-bold">14ms</div>
-              </div>
+              </motion.div>
             </div>
             <div className="absolute -top-6 -right-6 w-full h-full border border-cyan-500/20 rounded-3xl -z-10 transform translate-x-4 translate-y-4" />
           </motion.div>

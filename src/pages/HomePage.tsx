@@ -4,6 +4,9 @@ import { Hero } from '@/components/home/Hero';
 import { TrustBar } from '@/components/home/TrustBar';
 import { ServiceSlider } from '@/components/home/ServiceSlider';
 import { CategoryCard } from '@/components/home/CategoryCard';
+import { Partners } from '@/components/home/Partners';
+import { OrderFlowGuide } from '@/components/home/OrderFlowGuide';
+import { Testimonials } from '@/components/home/Testimonials';
 import { MOCK_CATEGORIES } from '@shared/mock-data';
 import { Smartphone, ShieldCheck, Server, Cpu, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -23,8 +26,14 @@ export function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
           <TrustBar />
         </div>
-        <ServiceSlider />
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="mt-8">
+          <Partners />
+        </div>
+        <div className="mt-16">
+          <ServiceSlider />
+        </div>
+        <OrderFlowGuide />
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-foreground">GSM Services</h2>
             <p className="text-muted-foreground mt-4 max-w-lg mx-auto text-lg leading-relaxed">
@@ -39,7 +48,7 @@ export function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {MOCK_CATEGORIES.map((cat) => (
               <CategoryCard
                 key={cat.id}
@@ -49,7 +58,8 @@ export function HomePage() {
             ))}
           </div>
         </section>
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <Testimonials />
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="relative rounded-4xl overflow-hidden glass-premium border-cyan-500/10 cyan-glow">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent pointer-events-none" />
             <div className="p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
