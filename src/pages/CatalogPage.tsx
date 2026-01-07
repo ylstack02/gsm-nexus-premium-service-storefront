@@ -15,9 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  Search, 
-  X, 
+import {
+  Search,
+  X,
   ArrowUpDown,
   FilterX
 } from 'lucide-react';
@@ -84,33 +84,35 @@ export function CatalogPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
         <div className="space-y-8">
           <header className="flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-center glass-premium p-3 rounded-2xl border border-cyan-500/10 shadow-sm">
-              <CategorySelector 
-                categories={categories || []} 
-                selectedIds={selectedCategories}
-                onToggle={toggleCategory}
-                onClear={() => {
-                  setSelectedCategories([]);
-                  updateURL(search, []);
-                }}
-              />
-              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                <SelectTrigger className="h-12 w-full sm:w-[180px] rounded-xl bg-slate-100 dark:bg-slate-800/50 border-none text-xs font-bold uppercase tracking-widest focus:ring-cyan-500/20 px-4">
-                  <div className="flex items-center gap-2">
-                    <ArrowUpDown className="w-3.5 h-3.5 text-cyan-500" />
-                    <SelectValue placeholder="Sort By" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-cyan-500/10">
-                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="speed-asc">Delivery: Fastest</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center glass-premium p-3 rounded-[2rem] border border-cyan-500/10 shadow-sm transition-all">
+              <div className="flex w-full md:w-auto gap-2 md:gap-4 shrink-0">
+                <CategorySelector
+                  categories={categories || []}
+                  selectedIds={selectedCategories}
+                  onToggle={toggleCategory}
+                  onClear={() => {
+                    setSelectedCategories([]);
+                    updateURL(search, []);
+                  }}
+                />
+                <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+                  <SelectTrigger className="h-12 w-[160px] md:w-[180px] rounded-xl bg-slate-100 dark:bg-slate-800/50 border-none text-[10px] md:text-xs font-bold uppercase tracking-widest focus:ring-cyan-500/20 px-4">
+                    <div className="flex items-center gap-2">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-cyan-500" />
+                      <SelectValue placeholder="Sort" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-cyan-500/10">
+                    <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                    <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                    <SelectItem value="speed-asc">Delivery: Fastest</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Model, IMEI, or Cluster..."
+                <Input
+                  placeholder="Find a service..."
                   className="pl-12 h-12 border-none bg-slate-100 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-cyan-500/20 rounded-xl text-sm font-medium"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -118,7 +120,7 @@ export function CatalogPage() {
               </form>
             </div>
             {(selectedCategories.length > 0 || search) && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-wrap items-center gap-2 px-2"
@@ -139,11 +141,11 @@ export function CatalogPage() {
                     </button>
                   </Badge>
                 )}
-                <button 
+                <button
                   onClick={() => { setSelectedCategories([]); setSearch(''); updateURL('', []); }}
                   className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-cyan-500 px-2 transition-colors"
                 >
-                  Clear all filters
+                  Reset Clusters
                 </button>
               </motion.div>
             )}
@@ -157,7 +159,7 @@ export function CatalogPage() {
                   ))}
                 </div>
               ) : sortedServices.length === 0 ? (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center justify-center py-32 text-center glass-premium rounded-[2.5rem] border-dashed border-cyan-500/20"
@@ -169,8 +171,8 @@ export function CatalogPage() {
                   <p className="text-muted-foreground mt-2 max-w-sm px-6">
                     We couldn't find any services matching your current configuration. Try adjusting your cluster selection or search term.
                   </p>
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     onClick={() => { setSearch(''); setSelectedCategories([]); updateURL('', []); }}
                     className="mt-6 text-cyan-600 font-bold uppercase tracking-widest text-xs"
                   >
@@ -178,9 +180,9 @@ export function CatalogPage() {
                   </Button>
                 </motion.div>
               ) : (
-                <motion.div 
+                <motion.div
                   layout
-                  className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
+                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
                 >
                   {sortedServices.map((service) => (
                     <motion.div
