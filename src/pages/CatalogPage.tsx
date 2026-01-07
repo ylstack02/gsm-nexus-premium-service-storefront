@@ -15,11 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Search,
-  X,
-  ArrowUpDown,
-  FilterX
+import { 
+  Search, 
+  X, 
+  ArrowUpDown, 
+  FilterX 
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Service } from '@shared/types';
@@ -63,6 +63,11 @@ export function CatalogPage() {
     e.preventDefault();
     updateURL(search, selectedCategories);
   };
+  const resetAll = () => {
+    setSearch('');
+    setSelectedCategories([]);
+    setSearchParams(new URLSearchParams());
+  };
   const sortedServices = useMemo(() => {
     if (!services) return [];
     return [...services].sort((a, b) => {
@@ -86,8 +91,8 @@ export function CatalogPage() {
           <header className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center glass-premium p-3 rounded-2xl md:rounded-[2rem] border border-cyan-500/10 shadow-sm transition-all">
               <div className="flex w-full md:w-auto gap-2 md:gap-4 shrink-0">
-                <CategorySelector
-                  categories={categories || []}
+                <CategorySelector 
+                  categories={categories || []} 
                   selectedIds={selectedCategories}
                   onToggle={toggleCategory}
                   onClear={() => {
@@ -111,7 +116,7 @@ export function CatalogPage() {
               </div>
               <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
+                <Input 
                   placeholder="Search GSM Services..."
                   className="pl-12 h-12 border-none bg-slate-100 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-cyan-500/20 rounded-xl text-sm font-medium"
                   value={search}
@@ -120,8 +125,8 @@ export function CatalogPage() {
               </form>
             </div>
             {(selectedCategories.length > 0 || search) && (
-              <motion.div
-                initial={{ opacity: 0, y: -5 }}
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }} 
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-wrap items-center gap-2 px-2"
               >
@@ -141,8 +146,8 @@ export function CatalogPage() {
                     </button>
                   </Badge>
                 )}
-                <button
-                  onClick={() => { setSelectedCategories([]); setSearch(''); updateURL('', []); }}
+                <button 
+                  onClick={resetAll}
                   className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-cyan-500 px-2 transition-colors"
                 >
                   Reset Filters
@@ -159,39 +164,35 @@ export function CatalogPage() {
                   ))}
                 </div>
               ) : sortedServices.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }} 
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center justify-center py-32 text-center glass-premium rounded-[2.5rem] border-dashed border-cyan-500/20"
                 >
-                  <div className="bg-cyan-500/5 p-8 rounded-full mb-6 ring-1 ring-cyan-500/10 cyan-glow">
+                  <div className="bg-cyan-500/5 p-8 rounded-full mb-6 ring-1 ring-cyan-500/10 cyan-glow shadow-cyan-500/20 shadow-xl">
                     <FilterX className="w-12 h-12 text-cyan-500/40" />
                   </div>
                   <h3 className="text-2xl font-display font-bold">No services found</h3>
                   <p className="text-muted-foreground mt-2 max-w-sm px-6">
                     We couldn't find any GSM services matching your current filters. Try resetting your search.
                   </p>
-                  <Button
-                    variant="link"
-                    onClick={() => { 
-                      setSearch(''); 
-                      setSelectedCategories([]); 
-                      updateURL('', []); 
-                    }}
+                  <Button 
+                    variant="link" 
+                    onClick={resetAll}
                     className="mt-6 text-cyan-600 font-bold uppercase tracking-widest text-xs"
                   >
                     Reset All Filters
                   </Button>
                 </motion.div>
               ) : (
-                <motion.div
+                <motion.div 
                   layout
                   className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
                 >
                   {sortedServices.map((service) => (
-                    <motion.div
+                    <motion.div 
                       layout
-                      key={service.id}
+                      key={service.id} 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9 }}

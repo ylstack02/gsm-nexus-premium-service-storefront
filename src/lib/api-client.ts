@@ -18,14 +18,14 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     if (categories.length > 0) {
       results = results.filter(s => {
         const category = MOCK_CATEGORIES.find(c => c.id === s.categoryId || c.slug === s.categoryId);
-        return categories.includes(s.categoryId) ||
+        return categories.includes(s.categoryId) || 
                (category && (categories.includes(category.slug) || categories.includes(category.id)));
       });
     }
     if (query) {
       results = results.filter(s => {
         const category = MOCK_CATEGORIES.find(c => c.id === s.categoryId);
-        return s.name.toLowerCase().includes(query) ||
+        return s.name.toLowerCase().includes(query) || 
                s.description.toLowerCase().includes(query) ||
                s.id.toLowerCase().includes(query) ||
                (category && category.name.toLowerCase().includes(query));
@@ -94,7 +94,7 @@ export const getServices = (params?: { category?: string | string[]; q?: string 
 };
 export const getCategories = () => api<ServiceCategory[]>('/api/categories');
 export const getServiceById = (id: string) => api<Service>(`/api/services/${id}`);
-export const createOrder = (orderData: { customerEmail: string; serviceId: string; formData: Record<string, string> }) =>
+export const createOrder = (orderData: { customerEmail: string; serviceId: string; formData: Record<string, string> }) => 
   api<Order>('/api/orders', {
     method: 'POST',
     body: JSON.stringify(orderData)
