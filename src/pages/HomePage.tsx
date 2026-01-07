@@ -25,19 +25,19 @@ export function HomePage() {
         </div>
         <ServiceSlider />
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div>
-              <h2 className="text-3xl font-display font-bold tracking-tight text-foreground">Service Clusters</h2>
-              <p className="text-muted-foreground mt-2 max-w-lg">
-                Explore our full range of automated GSM solutions and real-time server services.
-              </p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-foreground">GSM Services</h2>
+            <p className="text-muted-foreground mt-4 max-w-lg mx-auto text-lg leading-relaxed">
+              Professional automated solutions for mobile specialists and repair centers worldwide.
+            </p>
+            <div className="mt-8">
+              <Link to="/catalog">
+                <Button variant="outline" className="group rounded-full glass-premium border-cyan-500/20 hover:border-cyan-500/50 px-8 py-6 font-bold uppercase tracking-widest text-xs">
+                  Browse Full Catalog
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
             </div>
-            <Link to="/catalog">
-              <Button variant="outline" className="group rounded-full glass-premium border-cyan-500/20 hover:border-cyan-500/50">
-                Browse Full Catalog
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {MOCK_CATEGORIES.map((cat) => (
@@ -52,16 +52,16 @@ export function HomePage() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
           <div className="relative rounded-4xl overflow-hidden glass-premium border-cyan-500/10 cyan-glow">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent pointer-events-none" />
-            <div className="p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
               <div>
                 <h2 className="text-3xl md:text-6xl font-display font-bold text-foreground mb-6 leading-tight tracking-tighter">
                   Premium Solutions <br /> for <span className="text-cyan-500">GSM Experts</span>
                 </h2>
-                <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-lg">
+                <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
                   Join hundreds of mobile repair shops using our automated processing systems.
-                  Scale your business with bulk rates and direct server API access.
+                  Scale your business with bulk rates and secure GSM infrastructure.
                 </p>
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                   <Link to="/contact">
                     <Button size="xl" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full font-bold shadow-lg shadow-cyan-500/20">
                       Get Enterprise Access
@@ -77,7 +77,7 @@ export function HomePage() {
               <div className="hidden lg:grid grid-cols-2 gap-4">
                 {[
                   { label: "Uptime", value: "99.9%" },
-                  { label: "API Res", value: "20ms" },
+                  { label: "Response", value: "20ms" },
                   { label: "Success", value: "98.5%" },
                   { label: "Support", value: "24/7" },
                 ].map((stat, i) => (
@@ -103,7 +103,7 @@ export function HomePage() {
               </div>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-8">
                 Professional digital solutions for the mobile repair industry. Global coverage, instant delivery,
-                and server-side security you can trust.
+                and secure service infrastructure you can trust.
               </p>
               <div className="flex gap-4">
                  {[1,2,3].map(i => <div key={i} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 hover:border-cyan-500/50 transition-all cursor-pointer" />)}
@@ -136,7 +136,7 @@ export function HomePage() {
           </div>
           <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground font-medium">
-              © {new Date().getFullYear()} GSM Nexus. All rights reserved. Built for specialists.
+              © {new Date().getFullYear()} GSM Nexus. Secure Service Infrastructure.
             </p>
             <div className="flex gap-4 items-center">
                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Secured By</span>

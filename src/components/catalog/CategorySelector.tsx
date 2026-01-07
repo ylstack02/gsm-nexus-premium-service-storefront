@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, ChevronDown, Layers, X } from 'lucide-react';
+import { Check, ChevronDown, Cpu, Smartphone, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Popover,
@@ -31,13 +31,12 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
   const [open, setOpen] = useState(false);
   const triggerContent = (
     <div className="flex items-center gap-2 overflow-hidden">
-      <Layers className="w-4 h-4 text-cyan-500 shrink-0" />
+      <Smartphone className="w-4 h-4 text-cyan-500 shrink-0" />
       <span className="text-xs font-bold uppercase tracking-widest truncate">
-        {selectedCount === 0 ? "All Clusters" : `Clusters (${selectedCount})`}
+        {selectedCount === 0 ? "All Services" : `GSM Services (${selectedCount})`}
       </span>
     </div>
   );
-  // Desktop View: Popover with Checkboxes
   if (!isMobile) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
@@ -64,7 +63,7 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
               <div className="w-4 h-4 mr-3 flex items-center justify-center">
                 {selectedCount === 0 && <Check className="w-3 h-3" />}
               </div>
-              All Services
+              View All Services
             </button>
             <div className="h-px bg-border my-1" />
             <div className="max-h-[300px] overflow-y-auto custom-scrollbar pr-1">
@@ -95,7 +94,6 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
       </Popover>
     );
   }
-  // Mobile View: Drawer with Chips
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -117,8 +115,8 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
       <SheetContent side="bottom" className="rounded-t-[2.5rem] px-6 pb-10 border-t border-cyan-500/10">
         <SheetHeader className="mb-6 flex flex-row items-center justify-between">
           <SheetTitle className="text-left font-display font-bold text-xl flex items-center gap-2">
-            <Layers className="w-5 h-5 text-cyan-500" />
-            Service Clusters
+            <Cpu className="w-5 h-5 text-cyan-500" />
+            GSM Services
           </SheetTitle>
           <SheetClose className="rounded-full bg-slate-100 dark:bg-slate-800 p-2">
             <X className="w-4 h-4" />
@@ -134,7 +132,7 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
                 : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-muted-foreground"
             )}
           >
-            All Clusters
+            All Services
           </button>
           <div className="grid grid-cols-2 gap-3">
             {categories.map((cat) => {
@@ -145,7 +143,7 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
                   whileTap={{ scale: 0.95 }}
                   onClick={() => onToggle(cat.slug)}
                   className={cn(
-                    "flex flex-col items-start gap-2 p-4 rounded-2xl border-2 transition-all text-left",
+                    "flex flex-col items-start gap-2 p-4 rounded-2xl border-2 transition-all text-left h-full",
                     isActive
                       ? "bg-cyan-500/10 border-cyan-500 text-cyan-600 dark:text-cyan-400"
                       : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-muted-foreground"
@@ -178,11 +176,11 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
             })}
           </div>
           <div className="pt-4">
-            <Button 
+            <Button
               className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-xs uppercase tracking-widest"
               onClick={() => setOpen(false)}
             >
-              Apply Filter
+              Apply Selection
             </Button>
           </div>
         </div>

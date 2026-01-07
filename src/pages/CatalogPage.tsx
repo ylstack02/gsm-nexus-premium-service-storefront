@@ -84,7 +84,7 @@ export function CatalogPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
         <div className="space-y-8">
           <header className="flex flex-col gap-6">
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center glass-premium p-3 rounded-[2rem] border border-cyan-500/10 shadow-sm transition-all">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center glass-premium p-3 rounded-2xl md:rounded-[2rem] border border-cyan-500/10 shadow-sm transition-all">
               <div className="flex w-full md:w-auto gap-2 md:gap-4 shrink-0">
                 <CategorySelector
                   categories={categories || []}
@@ -112,7 +112,7 @@ export function CatalogPage() {
               <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Find a service..."
+                  placeholder="Search GSM Services..."
                   className="pl-12 h-12 border-none bg-slate-100 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-cyan-500/20 rounded-xl text-sm font-medium"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -145,7 +145,7 @@ export function CatalogPage() {
                   onClick={() => { setSelectedCategories([]); setSearch(''); updateURL('', []); }}
                   className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-cyan-500 px-2 transition-colors"
                 >
-                  Reset Clusters
+                  Reset Filters
                 </button>
               </motion.div>
             )}
@@ -155,7 +155,7 @@ export function CatalogPage() {
               {loadingServices ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                    <Skeleton key={i} className="aspect-[4/5] w-full rounded-2xl md:rounded-3xl" />
+                    <Skeleton key={i} className="aspect-[3/4] md:aspect-[4/5] w-full rounded-2xl md:rounded-3xl" />
                   ))}
                 </div>
               ) : sortedServices.length === 0 ? (
@@ -167,22 +167,22 @@ export function CatalogPage() {
                   <div className="bg-cyan-500/5 p-8 rounded-full mb-6 ring-1 ring-cyan-500/10">
                     <FilterX className="w-12 h-12 text-cyan-500/40" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold">No results found</h3>
+                  <h3 className="text-2xl font-display font-bold">No services found</h3>
                   <p className="text-muted-foreground mt-2 max-w-sm px-6">
-                    We couldn't find any services matching your current configuration. Try adjusting your cluster selection or search term.
+                    We couldn't find any GSM services matching your current filters. Try resetting your search.
                   </p>
                   <Button
                     variant="link"
                     onClick={() => { setSearch(''); setSelectedCategories([]); updateURL('', []); }}
                     className="mt-6 text-cyan-600 font-bold uppercase tracking-widest text-xs"
                   >
-                    Reset Global Filters
+                    Reset All Filters
                   </Button>
                 </motion.div>
               ) : (
                 <motion.div
                   layout
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
+                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
                 >
                   {sortedServices.map((service) => (
                     <motion.div

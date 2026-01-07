@@ -14,16 +14,16 @@ export function Hero() {
   }, []);
   return (
     <section className="relative pt-20 pb-24 md:pt-32 md:pb-40 overflow-hidden">
-      {/* Dynamic Background Particles */}
-      <motion.div 
+      {/* Background Glows */}
+      <motion.div
         animate={{ scale: [1, 1.2, 1], x: [0, 50, 0] }}
         transition={{ duration: 20, repeat: Infinity }}
-        className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" 
+        className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"
       />
-      <motion.div 
+      <motion.div
         animate={{ scale: [1, 1.3, 1], x: [0, -40, 0] }}
         transition={{ duration: 15, repeat: Infinity }}
-        className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" 
+        className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none"
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -53,18 +53,18 @@ export function Hero() {
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              Professional, server-side unlocking for major brands. 
-              API-driven processing with 99.9% uptime and instant delivery for high-demand services.
+              Professional, server-side GSM services for major brands.
+              Direct gateway processing with 99.9% uptime and instant automated delivery.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/catalog">
-                <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 rounded-full h-14 group cyan-glow">
+                <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 rounded-full h-14 group cyan-glow font-bold">
                   Explore Services
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link to="/track">
-                <Button size="lg" variant="outline" className="px-8 rounded-full h-14 glass-premium">
+                <Button size="lg" variant="outline" className="px-8 rounded-full h-14 glass-premium font-bold">
                   Track Order
                 </Button>
               </Link>
@@ -78,7 +78,7 @@ export function Hero() {
                 ))}
               </div>
               <div className="text-sm text-muted-foreground font-medium">
-                <span className="font-bold text-foreground">Active Processing:</span> 42 services live
+                <span className="font-bold text-foreground">Live GSM Services:</span> 42 active gateways
               </div>
             </div>
           </motion.div>
@@ -103,7 +103,7 @@ export function Hero() {
                   <div className="font-mono text-sm">
                     <p className="text-cyan-500">$ nexus init --secure</p>
                     <p className="text-muted-foreground mt-1">Establishing encrypted tunnel...</p>
-                    <p className="text-cyan-400 mt-1">[OK] Connection: Server Cluster-Alpha</p>
+                    <p className="text-cyan-400 mt-1">[OK] Gateway: Secure GSM Gateway Alpha</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -111,7 +111,7 @@ export function Hero() {
                   <div className="font-mono text-sm">
                     <p className="text-blue-500">$ check --imei=352932...</p>
                     <p className="text-muted-foreground mt-1">Database sync in progress...</p>
-                    <p className="text-emerald-500 mt-1">[ELIGIBLE] Device: Clean / Factory Unlock</p>
+                    <p className="text-emerald-500 mt-1">[ELIGIBLE] Device: Clean / Auth OK</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">

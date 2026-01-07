@@ -42,7 +42,7 @@ export function DynamicForm({ service }: DynamicFormProps) {
       schemaShape[field.name] = validator;
     });
     return z.object(schemaShape);
-  }, [service.id, service.schema.fields]);
+  }, [service.schema.fields]);
   type FormValues = z.infer<typeof formSchema>;
   const {
     register,
@@ -107,7 +107,7 @@ export function DynamicForm({ service }: DynamicFormProps) {
               )}
               <AnimatePresence mode="wait">
                 {errors[field.name] && (
-                  <motion.p 
+                  <motion.p
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
@@ -133,7 +133,7 @@ export function DynamicForm({ service }: DynamicFormProps) {
           Add to Cart
         </Button>
         <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest">
-          Secure Server-Side Transmission
+          Secure GSM Protocol
         </p>
       </CardFooter>
     </Card>

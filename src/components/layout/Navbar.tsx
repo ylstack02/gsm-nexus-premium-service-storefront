@@ -72,7 +72,7 @@ export function Navbar() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Find a service..."
+                placeholder="Search GSM services..."
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
                 className="h-10 w-48 lg:w-64 rounded-full bg-slate-100 dark:bg-slate-800 pl-9 pr-4 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all border border-transparent focus:bg-background focus:border-cyan-500/30"
@@ -103,7 +103,7 @@ export function Navbar() {
                       GSM NEXUS
                     </SheetTitle>
                     <SheetDescription className="text-xs">
-                      Navigate through our service categories and account features.
+                      Navigate through professional GSM service categories.
                     </SheetDescription>
                   </SheetHeader>
                   <div className="flex flex-col gap-3">
