@@ -7,6 +7,7 @@ import { CategoryCard } from '@/components/home/CategoryCard';
 import { Partners } from '@/components/home/Partners';
 import { OrderFlowGuide } from '@/components/home/OrderFlowGuide';
 import { Testimonials } from '@/components/home/Testimonials';
+import { ResellerGrid } from '@/components/home/ResellerGrid';
 import { MOCK_CATEGORIES } from '@shared/mock-data';
 import { Smartphone, ShieldCheck, Server, Cpu, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -35,7 +36,7 @@ export function HomePage() {
         <OrderFlowGuide />
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-24">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-foreground">GSM Services</h2>
+            <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-foreground">Premium Gateways</h2>
             <p className="text-muted-foreground mt-4 max-w-lg mx-auto text-lg leading-relaxed">
               Professional automated solutions for mobile specialists and repair centers worldwide.
             </p>
@@ -59,17 +60,18 @@ export function HomePage() {
           </div>
         </section>
         <Testimonials />
+        <ResellerGrid />
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="relative rounded-4xl overflow-hidden glass-premium border-cyan-500/10 cyan-glow">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent pointer-events-none" />
             <div className="p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
               <div>
                 <h2 className="text-3xl md:text-6xl font-display font-bold text-foreground mb-6 leading-tight tracking-tighter">
-                  Premium Solutions <br /> for <span className="text-cyan-500">GSM Experts</span>
+                  Scale Your <br /> <span className="text-cyan-500">GSM Business</span>
                 </h2>
                 <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                  Join hundreds of mobile repair shops using our automated processing systems.
-                  Scale your business with bulk rates and secure GSM infrastructure.
+                  Join hundreds of repair shops using our automated processing systems.
+                  Get dedicated bulk rates and secure GSM infrastructure access.
                 </p>
                 <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                   <Link to="/contact">
@@ -113,7 +115,7 @@ export function HomePage() {
               </div>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-8">
                 Professional digital solutions for the mobile repair industry. Global coverage, instant delivery,
-                and secure service infrastructure you can trust.
+                and secure service infrastructure.
               </p>
               <div className="flex gap-4">
                  {[1,2,3].map(i => <div key={i} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 hover:border-cyan-500/50 transition-all cursor-pointer" />)}
@@ -124,7 +126,7 @@ export function HomePage() {
               <ul className="space-y-4 text-sm text-muted-foreground">
                 <li><Link to="/catalog" className="hover:text-cyan-500 transition-colors">Service Catalog</Link></li>
                 <li><Link to="/track" className="hover:text-cyan-500 transition-colors">Order Tracking</Link></li>
-                <li><Link to="/contact" className="hover:text-cyan-500 transition-colors">Bulk Pricing</Link></li>
+                <li><a href="#resellers" className="hover:text-cyan-500 transition-colors">Resellers</a></li>
               </ul>
             </div>
             <div>

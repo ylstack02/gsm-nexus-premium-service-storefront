@@ -65,6 +65,7 @@
   body {
     @apply bg-background text-foreground transition-colors duration-300;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    scroll-behavior: smooth;
   }
 }
 @layer components {
@@ -82,11 +83,25 @@
     background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
     color: white;
   }
-  .btn-premium::after {
-    content: '';
-    @apply absolute inset-0 bg-white/20 translate-y-full transition-transform duration-300;
+  .progress-line-glow {
+    background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.8), transparent);
+    background-size: 200% 100%;
+    animation: flow-glow 3s infinite linear;
   }
-  .btn-premium:hover::after {
-    @apply translate-y-0;
+  @keyframes flow-glow {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-cyan-500/20 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-cyan-500/40;
   }
 }
