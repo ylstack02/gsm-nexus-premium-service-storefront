@@ -6,24 +6,24 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { getOrderByTrackingId } from '@/lib/api-client';
-import { Search, Loader2, AlertCircle, FileSearch, History, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Search, AlertCircle, FileSearch, History, ShieldCheck, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 export function TrackingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialId = searchParams.get('id') || '';
   const [searchVal, setSearchVal] = useState(initialId);
   const [history, setHistory] = useState<string[]>([]);
-  const { data: order, isLoading, isError, error, refetch } = useQuery({
+  const { data: order, isLoading, isError, refetch } = useQuery({
     queryKey: ['order', initialId],
     queryFn: () => getOrderByTrackingId(initialId),
     enabled: !!initialId,
     retry: false
   });
   useEffect(() => {
-    if (order && !history.includes(order.trackingId)) {
+    if (order && order.trackingId && !history.includes(order.trackingId)) {
       setHistory(prev => [order.trackingId, ...prev].slice(0, 3));
     }
-  }, [order]);
+  }, [order, history]);
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchVal.trim()) {
@@ -38,7 +38,7 @@ export function TrackingPage() {
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-display font-bold mb-6"
@@ -49,10 +49,10 @@ export function TrackingPage() {
             Connect to our global server cluster for real-time processing updates on your GSM services.
           </p>
         </div>
-        <motion.form 
+        <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          onSubmit={handleSearch} 
+          onSubmit={handleSearch}
           className="relative max-w-2xl mx-auto mb-20"
         >
           <div className="relative group">
@@ -84,7 +84,7 @@ export function TrackingPage() {
             </div>
           )}
           {isError && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="glass-premium border-red-500/20 rounded-3xl p-10 text-center max-w-2xl mx-auto"
@@ -94,14 +94,14 @@ export function TrackingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-3">Transmission Interrupted</h3>
               <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-8">
-                The specified Tracking ID could not be matched against our active databases. 
+                The specified Tracking ID could not be matched against our active databases.
                 Please verify the ID from your confirmation email.
               </p>
               <Button variant="outline" onClick={() => setSearchVal('')} className="rounded-full px-8">Try Another ID</Button>
             </motion.div>
           )}
           {order && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="space-y-8"
@@ -160,7 +160,7 @@ export function TrackingPage() {
             </motion.div>
           )}
           {!initialId && !isLoading && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-12 text-center"

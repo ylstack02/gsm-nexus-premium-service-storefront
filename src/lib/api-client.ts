@@ -12,14 +12,18 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const pathname = url.pathname;
   // GET /api/services
   if (pathname === '/api/services') {
-    const category = url.searchParams.get('category');
+    const categories = url.searchParams.getAll('category');
     const query = url.searchParams.get('q')?.toLowerCase();
     let results = [...MOCK_SERVICES];
-    if (category) results = results.filter(s => s.categoryId === category);
-    if (query) results = results.filter(s =>
-      s.name.toLowerCase().includes(query) ||
-      s.description.toLowerCase().includes(query)
-    );
+    if (categories.length > 0) {
+      results = results.filter(s => categories.includes(s.categoryId) || categories.includes(s.id));
+    }
+    if (query) {
+      results = results.filter(s => 
+        s.name.toLowerCase().includes(query) || 
+        s.description.toLowerCase().includes(query)
+      );
+    }
     return results as unknown as T;
   }
   // GET /api/categories
@@ -66,9 +70,15 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   }
   return json.data
 }
-export const getServices = (params?: { category?: string; q?: string }) => {
+export const getServices = (params?: { category?: string | string[]; q?: string }) => {
   const query = new URLSearchParams();
-  if (params?.category) query.append('category', params.category);
+  if (params?.category) {
+    if (Array.isArray(params.category)) {
+      params.category.forEach(c => query.append('category', c));
+    } else {
+      query.append('category', params.category);
+    }
+  }
   if (params?.q) query.append('q', params.q);
   const queryString = query.toString();
   return api<Service[]>(`/api/services${queryString ? `?${queryString}` : ''}`);
