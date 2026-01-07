@@ -118,6 +118,9 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
             <Cpu className="w-5 h-5 text-cyan-500" />
             GSM Services
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Filter GSM services by category
+          </SheetDescription>
           <SheetClose className="rounded-full bg-slate-100 dark:bg-slate-800 p-2">
             <X className="w-4 h-4" />
           </SheetClose>

@@ -164,7 +164,7 @@ export function CatalogPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center justify-center py-32 text-center glass-premium rounded-[2.5rem] border-dashed border-cyan-500/20"
                 >
-                  <div className="bg-cyan-500/5 p-8 rounded-full mb-6 ring-1 ring-cyan-500/10">
+                  <div className="bg-cyan-500/5 p-8 rounded-full mb-6 ring-1 ring-cyan-500/10 cyan-glow">
                     <FilterX className="w-12 h-12 text-cyan-500/40" />
                   </div>
                   <h3 className="text-2xl font-display font-bold">No services found</h3>
@@ -173,7 +173,11 @@ export function CatalogPage() {
                   </p>
                   <Button
                     variant="link"
-                    onClick={() => { setSearch(''); setSelectedCategories([]); updateURL('', []); }}
+                    onClick={() => { 
+                      setSearch(''); 
+                      setSelectedCategories([]); 
+                      updateURL('', []); 
+                    }}
                     className="mt-6 text-cyan-600 font-bold uppercase tracking-widest text-xs"
                   >
                     Reset All Filters

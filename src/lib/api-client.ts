@@ -18,8 +18,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     if (categories.length > 0) {
       results = results.filter(s => {
         const category = MOCK_CATEGORIES.find(c => c.id === s.categoryId || c.slug === s.categoryId);
-        return categories.includes(s.categoryId) || 
-               categories.includes(s.id) || 
+        return categories.includes(s.categoryId) ||
                (category && (categories.includes(category.slug) || categories.includes(category.id)));
       });
     }

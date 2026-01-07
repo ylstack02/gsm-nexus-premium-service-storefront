@@ -26,10 +26,10 @@ export function ServiceCard({ service }: ServiceCardProps) {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className="h-full"
     >
-      <Card className="group glass-premium border border-slate-200/60 dark:border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 flex flex-col h-full rounded-2xl md:rounded-3xl overflow-hidden relative">
+      <Card className="group glass-premium border border-slate-200/60 dark:border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-700 flex flex-col h-full rounded-2xl md:rounded-3xl overflow-hidden relative">
         {(service.featured || tag !== 'SERVICE') && (
           <div className="absolute top-0 right-0 overflow-hidden w-20 h-20 md:w-28 md:h-28 pointer-events-none z-10">
-            <div className="bg-cyan-500 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] py-1.5 w-[150%] text-center transform rotate-45 translate-x-[30%] translate-y-[40%] shadow-lg shadow-cyan-500/30 relative overflow-hidden">
+            <div className="bg-cyan-500 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] py-1.5 w-[160%] text-center transform rotate-45 translate-x-[28%] translate-y-[35%] shadow-lg shadow-cyan-500/30 relative overflow-hidden">
               <span className="relative z-10">{tag}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />
             </div>
