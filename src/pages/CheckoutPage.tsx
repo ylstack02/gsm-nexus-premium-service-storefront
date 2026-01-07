@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 export function CheckoutPage() {
   const cart = useStore(s => s.cart);
   const clearCart = useStore(s => s.clearCart);
@@ -53,7 +54,6 @@ export function CheckoutPage() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
         <Navbar />
         <div className="max-w-3xl mx-auto px-4 py-20 text-center relative">
-          {/* Confetti Celebration Simulation */}
           <div className="absolute inset-0 pointer-events-none">
             {[...Array(6)].map((_, i) => (
               <motion.div
@@ -77,7 +77,7 @@ export function CheckoutPage() {
           </motion.div>
           <h1 className="text-4xl font-display font-bold mb-4">Transmission Successful!</h1>
           <p className="text-muted-foreground text-lg mb-10 max-w-lg mx-auto">
-            Your request has been successfully dispatched to our secure API cluster. 
+            Your request has been successfully dispatched to our secure API cluster.
             Keep your tracking ID for status lookups.
           </p>
           <div className="glass-premium rounded-3xl p-10 mb-10 shadow-2xl relative">
@@ -104,14 +104,14 @@ export function CheckoutPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
         <CheckoutStepper currentStep={2} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-8">
             <Card className="glass-premium rounded-2xl overflow-hidden">
               <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-800/20">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center">1</span>
+                  <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center font-bold">1</span>
                   Recipient Verification
                 </CardTitle>
               </CardHeader>
@@ -149,7 +149,7 @@ export function CheckoutPage() {
             <Card className="glass-premium rounded-2xl overflow-hidden">
               <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-800/20">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center">2</span>
+                  <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center font-bold">2</span>
                   Payment Gateway
                 </CardTitle>
               </CardHeader>
@@ -162,11 +162,12 @@ export function CheckoutPage() {
                   ].map((method) => (
                     <button
                       key={method.id}
+                      type="button"
                       onClick={() => setPaymentMethod(method.id)}
                       className={cn(
                         "flex flex-col items-center gap-3 p-6 rounded-2xl border-2 transition-all group",
-                        paymentMethod === method.id 
-                          ? "border-cyan-500 bg-cyan-500/5 cyan-glow shadow-inner" 
+                        paymentMethod === method.id
+                          ? "border-cyan-500 bg-cyan-500/5 shadow-inner"
                           : "border-slate-100 dark:border-slate-800 hover:border-cyan-500/30 bg-card"
                       )}
                     >

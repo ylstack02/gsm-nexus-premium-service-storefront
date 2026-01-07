@@ -23,7 +23,6 @@ interface DynamicFormProps {
 }
 export function DynamicForm({ service }: DynamicFormProps) {
   const addToCart = useStore(s => s.addToCart);
-  // Generate dynamic schema based on service fields
   const schemaShape: Record<string, any> = {};
   service.schema.fields.forEach(field => {
     let validator = z.string();
@@ -57,11 +56,11 @@ export function DynamicForm({ service }: DynamicFormProps) {
     });
   };
   return (
-    <Card className="border-2 border-blue-600/10 shadow-xl shadow-blue-500/5 overflow-hidden">
+    <Card className="border-2 border-cyan-500/20 shadow-xl shadow-cyan-500/5 overflow-hidden">
       <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Order Details</CardTitle>
-          <div className="text-2xl font-bold text-blue-600">
+          <div className="text-2xl font-bold text-cyan-600">
             ${service.price.toFixed(2)}
           </div>
         </div>
@@ -78,7 +77,7 @@ export function DynamicForm({ service }: DynamicFormProps) {
               </Label>
               {field.type === 'select' ? (
                 <Select onValueChange={(val) => setValue(field.name, val)}>
-                  <SelectTrigger className={errors[field.name] ? "border-red-500 bg-red-50/50" : ""}>
+                  <SelectTrigger className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus:ring-cyan-500/20"}>
                     <SelectValue placeholder={field.placeholder || `Select ${field.label}`} />
                   </SelectTrigger>
                   <SelectContent>
@@ -93,14 +92,14 @@ export function DynamicForm({ service }: DynamicFormProps) {
                 <Textarea
                   {...register(field.name as any)}
                   placeholder={field.placeholder}
-                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : ""}
+                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus-visible:ring-cyan-500/20"}
                 />
               ) : (
                 <Input
                   {...register(field.name as any)}
                   type={field.type === 'number' ? 'number' : 'text'}
                   placeholder={field.placeholder}
-                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : ""}
+                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus-visible:ring-cyan-500/20"}
                 />
               )}
               {errors[field.name] && (
@@ -114,10 +113,10 @@ export function DynamicForm({ service }: DynamicFormProps) {
         </form>
       </CardContent>
       <CardFooter className="bg-slate-50 dark:bg-slate-900/50 border-t flex flex-col gap-3 pt-6">
-        <Button 
-          type="submit" 
-          form="service-order-form" 
-          className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-md font-bold"
+        <Button
+          type="submit"
+          form="service-order-form"
+          className="w-full bg-cyan-500 hover:bg-cyan-600 h-12 text-md font-bold shadow-lg shadow-cyan-500/20"
           disabled={isSubmitting}
         >
           <ShoppingCart className="w-5 h-5 mr-2" />

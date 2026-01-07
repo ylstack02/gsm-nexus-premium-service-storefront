@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { ServiceCard } from '@/components/catalog/ServiceCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
   Search,
@@ -56,7 +57,7 @@ export function CatalogPage() {
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all ${
-                activeCategory === cat.id ? 'bg-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/20' : 'hover:bg-accent text-muted-foreground hover:text-foreground'
+                activeCategory === cat.id ? 'bg-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/20' : 'hover:bg-accent text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -70,9 +71,8 @@ export function CatalogPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
         <div className="flex flex-col md:flex-row gap-8 items-start">
-          {/* Desktop Sidebar */}
           <aside className="hidden md:block w-64 space-y-8 shrink-0 sticky top-24">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
@@ -95,7 +95,6 @@ export function CatalogPage() {
                   />
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
-                  {/* Mobile Filter Trigger */}
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button variant="outline" className="md:hidden flex-1 rounded-xl h-12 gap-2">
@@ -117,14 +116,16 @@ export function CatalogPage() {
                   </div>
                 </div>
               </div>
-              {activeCategory && (
+              {(activeCategory || search) && (
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-cyan-500 text-white gap-1 pl-3 pr-1 py-1 rounded-full text-[10px] font-bold">
-                    {categories?.find(c => c.id === activeCategory)?.name}
-                    <button onClick={() => setActiveCategory(null)} className="hover:bg-white/20 rounded-full p-0.5">
-                      <X className="w-3 h-3" />
-                    </button>
-                  </Badge>
+                  {activeCategory && (
+                    <Badge className="bg-cyan-500 text-white gap-1 pl-3 pr-1 py-1 rounded-full text-[10px] font-bold">
+                      {categories?.find(c => c.id === activeCategory)?.name}
+                      <button onClick={() => setActiveCategory(null)} className="hover:bg-white/20 rounded-full p-0.5">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  )}
                   {search && (
                     <Badge variant="outline" className="gap-1 pl-3 pr-1 py-1 rounded-full text-[10px] font-bold">
                       "{search}"
@@ -144,7 +145,7 @@ export function CatalogPage() {
                   ))}
                 </div>
               ) : !services || services.length === 0 ? (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="flex flex-col items-center justify-center py-24 text-center glass-premium rounded-3xl"
@@ -165,7 +166,7 @@ export function CatalogPage() {
                   </Button>
                 </motion.div>
               ) : (
-                <motion.div 
+                <motion.div
                   layout
                   className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
