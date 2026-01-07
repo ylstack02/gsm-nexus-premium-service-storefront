@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -18,28 +18,31 @@ import {
 } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { ShoppingCart, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 interface DynamicFormProps {
   service: Service;
 }
 export function DynamicForm({ service }: DynamicFormProps) {
   const addToCart = useStore(s => s.addToCart);
-  const schemaShape: Record<string, any> = {};
-  service.schema.fields.forEach(field => {
-    let validator = z.string();
-    if (field.required) {
-      validator = validator.min(1, `${field.label} is required`);
-    } else {
-      validator = validator.optional() as any;
-    }
-    if (field.type === 'imei') {
-      validator = validator.length(15, "IMEI must be exactly 15 digits").regex(/^\d+$/, "IMEI must only contain numbers");
-    }
-    if (field.validation?.pattern) {
-      validator = validator.regex(new RegExp(field.validation.pattern), field.validation.message || "Invalid format");
-    }
-    schemaShape[field.name] = validator;
-  });
-  const formSchema = z.object(schemaShape);
+  const formSchema = useMemo(() => {
+    const schemaShape: Record<string, any> = {};
+    service.schema.fields.forEach(field => {
+      let validator = z.string();
+      if (field.required) {
+        validator = validator.min(1, `${field.label} is required`);
+      } else {
+        validator = validator.optional() as any;
+      }
+      if (field.type === 'imei') {
+        validator = validator.length(15, "IMEI must be exactly 15 digits").regex(/^\d+$/, "IMEI must only contain numbers");
+      }
+      if (field.validation?.pattern) {
+        validator = validator.regex(new RegExp(field.validation.pattern), field.validation.message || "Invalid format");
+      }
+      schemaShape[field.name] = validator;
+    });
+    return z.object(schemaShape);
+  }, [service.id, service.schema.fields]);
   type FormValues = z.infer<typeof formSchema>;
   const {
     register,
@@ -102,12 +105,19 @@ export function DynamicForm({ service }: DynamicFormProps) {
                   className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus-visible:ring-cyan-500/20"}
                 />
               )}
-              {errors[field.name] && (
-                <p className="text-xs text-red-500 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" />
-                  {errors[field.name]?.message as string}
-                </p>
-              )}
+              <AnimatePresence mode="wait">
+                {errors[field.name] && (
+                  <motion.p 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-xs text-red-500 flex items-center gap-1 mt-1 overflow-hidden"
+                  >
+                    <AlertCircle className="w-3 h-3" />
+                    {errors[field.name]?.message as string}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </form>

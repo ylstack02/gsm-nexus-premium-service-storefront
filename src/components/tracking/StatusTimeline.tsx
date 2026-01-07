@@ -1,5 +1,5 @@
 import React from 'react';
-import { Order } from '@shared/types';
+import { Order, OrderStatus } from '@shared/types';
 import { CheckCircle2, Clock, Package, AlertCircle, Cpu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 interface StatusTimelineProps {
@@ -32,24 +32,36 @@ export function StatusTimeline({ order }: StatusTimelineProps) {
       icon: <CheckCircle2 className="w-5 h-5" />
     }
   ];
-  const getStatusIndex = (status: string) => {
-    if (status === 'completed') return 3;
-    if (status === 'processing') return 2;
-    if (status === 'pending') return 0;
-    return 1;
+  const getStatusIndex = (status: OrderStatus) => {
+    switch (status) {
+      case 'completed': return 3;
+      case 'processing': return 2;
+      case 'verifying': return 1;
+      case 'pending': return 0;
+      default: return 0;
+    }
   };
   const currentIndex = getStatusIndex(order.status);
+  const isRejected = order.status === 'rejected';
   return (
     <div className="bg-white dark:bg-slate-900 border rounded-2xl p-8 shadow-sm">
+      {isRejected && (
+        <div className="mb-8 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-xl flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div>
+            <h5 className="text-sm font-bold text-red-700 dark:text-red-400">Order Rejected</h5>
+            <p className="text-xs text-red-600/80 dark:text-red-400/80 mt-1">This request could not be processed. Please contact technical support for details.</p>
+          </div>
+        </div>
+      )}
       <div className="relative space-y-10">
-        {/* Connector Line */}
         <div className="absolute left-[20px] top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-slate-800"></div>
         {stages.map((stage, idx) => {
-          const isCompleted = idx < currentIndex;
-          const isActive = idx === currentIndex;
-          const isLast = idx === stages.length - 1;
+          const isCompleted = idx < currentIndex && !isRejected;
+          const isActive = idx === currentIndex && !isRejected;
+          const isFaded = isRejected || idx > currentIndex;
           return (
-            <div key={stage.id} className="relative flex gap-6">
+            <div key={stage.id} className={cn("relative flex gap-6", isFaded && !isActive && "opacity-50")}>
               <div
                 className={cn(
                   "relative z-10 w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors duration-500",

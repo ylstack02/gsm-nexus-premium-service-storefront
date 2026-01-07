@@ -41,34 +41,34 @@ export function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {MOCK_CATEGORIES.map((cat) => (
-              <CategoryCard 
-                key={cat.id} 
-                category={cat} 
-                icon={ICON_MAP[cat.iconName] || Smartphone} 
+              <CategoryCard
+                key={cat.id}
+                category={cat}
+                icon={ICON_MAP[cat.iconName] || Smartphone}
               />
             ))}
           </div>
         </section>
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-          <div className="relative rounded-3xl overflow-hidden glass-premium border-cyan-500/10 cyan-glow">
+          <div className="relative rounded-4xl overflow-hidden glass-premium border-cyan-500/10 cyan-glow">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent pointer-events-none" />
             <div className="p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-6 leading-tight">
+                <h2 className="text-3xl md:text-6xl font-display font-bold text-foreground mb-6 leading-tight tracking-tighter">
                   Premium Solutions <br /> for <span className="text-cyan-500">GSM Experts</span>
                 </h2>
-                <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-                  Join hundreds of mobile repair shops using our automated processing systems. 
+                <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-lg">
+                  Join hundreds of mobile repair shops using our automated processing systems.
                   Scale your business with bulk rates and direct server API access.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Link to="/contact">
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 rounded-full h-12 font-bold shadow-lg shadow-cyan-500/20">
+                    <Button size="xl" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full font-bold shadow-lg shadow-cyan-500/20">
                       Get Enterprise Access
                     </Button>
                   </Link>
-                  <Link to="/contact">
-                    <Button variant="ghost" className="rounded-full h-12 font-bold px-8">
+                  <Link to="/about">
+                    <Button size="xl" variant="ghost" className="rounded-full font-bold">
                       View API Docs
                     </Button>
                   </Link>
@@ -81,9 +81,9 @@ export function HomePage() {
                   { label: "Success", value: "98.5%" },
                   { label: "Support", value: "24/7" },
                 ].map((stat, i) => (
-                  <div key={i} className="p-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/10 text-center">
-                    <div className="text-2xl font-bold text-cyan-500">{stat.value}</div>
-                    <div className="text-xs uppercase font-bold tracking-widest text-muted-foreground mt-1">{stat.label}</div>
+                  <div key={i} className="p-8 rounded-3xl bg-white/50 dark:bg-slate-900/50 border border-white/10 text-center hover:border-cyan-500/30 transition-colors cursor-default">
+                    <div className="text-3xl font-bold text-cyan-500">{stat.value}</div>
+                    <div className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -91,21 +91,26 @@ export function HomePage() {
           </div>
         </section>
       </main>
-      <footer className="border-t bg-white dark:bg-slate-900 py-16">
+      <footer className="border-t bg-white dark:bg-slate-900 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-16 mb-16">
             <div className="col-span-2">
-              <div className="flex items-center gap-2 mb-6">
-                <Cpu className="w-6 h-6 text-cyan-500" />
-                <span className="text-xl font-bold tracking-tighter">GSM NEXUS</span>
+              <div className="flex items-center gap-2 mb-8">
+                <div className="bg-cyan-500 p-1.5 rounded-lg">
+                  <Cpu className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold tracking-tighter font-display">GSM NEXUS</span>
               </div>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-                Professional digital solutions for the mobile repair industry. Global coverage, instant delivery, 
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-8">
+                Professional digital solutions for the mobile repair industry. Global coverage, instant delivery,
                 and server-side security you can trust.
               </p>
+              <div className="flex gap-4">
+                 {[1,2,3].map(i => <div key={i} className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 hover:border-cyan-500/50 transition-all cursor-pointer" />)}
+              </div>
             </div>
             <div>
-              <h4 className="font-bold text-sm mb-6">Explore</h4>
+              <h4 className="font-bold text-sm mb-8 uppercase tracking-widest text-foreground">Explore</h4>
               <ul className="space-y-4 text-sm text-muted-foreground">
                 <li><Link to="/catalog" className="hover:text-cyan-500 transition-colors">Service Catalog</Link></li>
                 <li><Link to="/track" className="hover:text-cyan-500 transition-colors">Order Tracking</Link></li>
@@ -113,7 +118,7 @@ export function HomePage() {
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-sm mb-6">Company</h4>
+              <h4 className="font-bold text-sm mb-8 uppercase tracking-widest text-foreground">Company</h4>
               <ul className="space-y-4 text-sm text-muted-foreground">
                 <li><Link to="/about" className="hover:text-cyan-500 transition-colors">About Us</Link></li>
                 <li><Link to="/contact" className="hover:text-cyan-500 transition-colors">Support</Link></li>
@@ -121,7 +126,7 @@ export function HomePage() {
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-sm mb-6">Connect</h4>
+              <h4 className="font-bold text-sm mb-8 uppercase tracking-widest text-foreground">Connect</h4>
               <ul className="space-y-4 text-sm text-muted-foreground">
                 <li><a href="#" className="hover:text-cyan-500 transition-colors">Telegram Channel</a></li>
                 <li><a href="#" className="hover:text-cyan-500 transition-colors">Twitter / X</a></li>
@@ -130,11 +135,11 @@ export function HomePage() {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground font-medium">
               © {new Date().getFullYear()} GSM Nexus. All rights reserved. Built for specialists.
             </p>
-            <div className="flex gap-4">
-              <div className="h-6 w-10 bg-slate-100 dark:bg-slate-800 rounded opacity-50" />
+            <div className="flex gap-4 items-center">
+               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Secured By</span>
               <div className="h-6 w-10 bg-slate-100 dark:bg-slate-800 rounded opacity-50" />
               <div className="h-6 w-10 bg-slate-100 dark:bg-slate-800 rounded opacity-50" />
             </div>

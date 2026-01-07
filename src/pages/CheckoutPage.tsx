@@ -10,9 +10,9 @@ import { useStore } from '@/store/use-store';
 import { useMutation } from '@tanstack/react-query';
 import { createOrder } from '@/lib/api-client';
 import { toast } from 'sonner';
-import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight, Zap } from 'lucide-react';
+import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight, Zap, Copy, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Order } from '@shared/types';
 export function CheckoutPage() {
@@ -23,6 +23,7 @@ export function CheckoutPage() {
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [copied, setCopied] = useState(false);
   const mutation = useMutation<Order, Error, { email: string; items: typeof cart }>({
     mutationFn: (data) => {
       const item = data.items[0];
@@ -41,6 +42,14 @@ export function CheckoutPage() {
       toast.error('Processing error: ' + error.message);
     }
   });
+  const handleCopyId = () => {
+    if (lastOrderId) {
+      navigator.clipboard.writeText(lastOrderId);
+      setCopied(true);
+      toast.success('Tracking ID copied');
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) return;
@@ -54,14 +63,14 @@ export function CheckoutPage() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
         <Navbar />
-        <div className="max-w-3xl mx-auto px-4 py-20 text-center relative">
+        <div className="max-w-4xl mx-auto px-4 py-16 md:py-24 text-center relative">
           <div className="absolute inset-0 pointer-events-none">
             {[...Array(6)].map((_, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: [0, 1, 0], scale: [0, 4, 6], x: (i - 2.5) * 100, y: (i % 2 === 0 ? -100 : 100) }}
-                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                animate={{ opacity: [0, 1, 0], scale: [0, 4, 6], x: (i - 2.5) * 150, y: (i % 2 === 0 ? -150 : 150) }}
+                transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                 className="absolute left-1/2 top-1/2 w-8 h-8 rounded-full bg-cyan-500/10 blur-xl"
               />
             ))}
@@ -72,28 +81,51 @@ export function CheckoutPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-8 flex justify-center"
           >
-            <div className="w-24 h-24 bg-cyan-100 dark:bg-cyan-900/30 rounded-full flex items-center justify-center text-cyan-600 cyan-glow">
+            <div className="w-24 h-24 bg-cyan-100 dark:bg-cyan-900/30 rounded-full flex items-center justify-center text-cyan-600 cyan-glow border-4 border-white dark:border-slate-800">
               <CheckCircle className="w-14 h-14" />
             </div>
           </motion.div>
-          <h1 className="text-4xl font-display font-bold mb-4">Transmission Successful!</h1>
-          <p className="text-muted-foreground text-lg mb-10 max-w-lg mx-auto">
-            Your request has been successfully dispatched to our secure API cluster.
-            Keep your tracking ID for status lookups.
+          <h1 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight">Transmission Successful!</h1>
+          <p className="text-muted-foreground text-lg mb-12 max-w-xl mx-auto leading-relaxed">
+            Your request has been successfully dispatched to our secure API cluster. 
+            All server-side handshakes are completed.
           </p>
-          <div className="glass-premium rounded-3xl p-10 mb-10 shadow-2xl relative">
-            <div className="absolute top-4 right-4 text-[10px] font-mono text-cyan-500/50 uppercase tracking-widest">Global Order ID</div>
-            <div className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-3">Your Tracking ID</div>
-            <div className="text-5xl font-mono font-bold text-cyan-600">{lastOrderId ?? "N/A"}</div>
+          <div className="glass-premium rounded-4xl p-10 md:p-16 mb-12 shadow-2xl relative border-cyan-500/20">
+            <div className="absolute top-6 right-8 text-[10px] font-mono text-cyan-500 font-bold uppercase tracking-[0.3em]">Global Node ID</div>
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Your Secured Tracking ID</div>
+            <div className="flex items-center justify-center gap-4">
+              <div className="text-4xl md:text-7xl font-mono font-bold text-cyan-600 tracking-tighter">
+                {lastOrderId}
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleCopyId}
+                className="h-12 w-12 rounded-2xl hover:bg-cyan-50 dark:hover:bg-cyan-950/30 transition-all active:scale-90"
+              >
+                <AnimatePresence mode="wait">
+                  {copied ? (
+                    <motion.div key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                      <Check className="w-6 h-6 text-emerald-500" />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="copy" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                      <Copy className="w-6 h-6 text-cyan-500" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Button>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={`/track?id=${lastOrderId}`}>
-              <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full px-10 h-14 shadow-lg shadow-cyan-500/20">
+              <Button size="xl" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full px-12 shadow-lg shadow-cyan-500/20 group">
                 Monitor Live Status
+                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
             <Link to="/catalog">
-              <Button size="lg" variant="outline" className="rounded-full px-10 h-14 glass-premium">
+              <Button size="xl" variant="outline" className="rounded-full px-12 glass-premium border-cyan-500/20">
                 New Order
               </Button>
             </Link>
@@ -109,7 +141,7 @@ export function CheckoutPage() {
         <CheckoutStepper currentStep={2} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-8">
-            <Card className="glass-premium rounded-2xl overflow-hidden">
+            <Card className="glass-premium rounded-2xl overflow-hidden border-cyan-500/10">
               <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-800/20">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center font-bold">1</span>
@@ -147,7 +179,7 @@ export function CheckoutPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="glass-premium rounded-2xl overflow-hidden">
+            <Card className="glass-premium rounded-2xl overflow-hidden border-cyan-500/10">
               <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-800/20">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center font-bold">2</span>

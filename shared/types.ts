@@ -40,7 +40,7 @@ export interface ServiceCategory {
   iconName: string;
   description?: string;
 }
-export type OrderStatus = 'pending' | 'processing' | 'completed' | 'rejected';
+export type OrderStatus = 'pending' | 'verifying' | 'processing' | 'completed' | 'rejected';
 export interface Order {
   id: string;
   serviceId: string;
