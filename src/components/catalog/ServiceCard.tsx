@@ -10,20 +10,30 @@ interface ServiceCardProps {
 }
 export function ServiceCard({ service }: ServiceCardProps) {
   return (
-    <Card className="group border hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+    <Card className="group glass-premium border border-slate-200/60 dark:border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 flex flex-col h-full rounded-3xl overflow-hidden relative">
+      {/* Popular/Featured Indicator */}
+      {service.featured && (
+        <div className="absolute top-0 right-0 overflow-hidden w-24 h-24 pointer-events-none">
+          <div className="bg-cyan-500 text-white text-[8px] font-bold uppercase tracking-widest py-1 w-[150%] text-center transform rotate-45 translate-x-[30%] translate-y-[50%] shadow-lg">
+            Popular
+          </div>
+        </div>
+      )}
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between mb-3">
-          <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 text-[10px] uppercase tracking-wider font-bold">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-600">
+              <Zap className="w-4 h-4" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Instant Check
+            </span>
+          </div>
+          <Badge variant="outline" className="bg-white/50 dark:bg-slate-900/50 text-[9px] font-bold uppercase border-slate-200 dark:border-slate-800">
             {service.deliveryTime}
           </Badge>
-          {service.featured && (
-            <Badge className="bg-amber-500 hover:bg-amber-600 text-[10px] border-none flex items-center gap-1">
-              <Zap className="w-3 h-3 fill-current" />
-              Popular
-            </Badge>
-          )}
         </div>
-        <CardTitle className="text-xl font-bold group-hover:text-blue-600 transition-colors line-clamp-1">
+        <CardTitle className="text-xl font-display font-bold group-hover:text-cyan-600 transition-colors line-clamp-2">
           {service.name}
         </CardTitle>
       </CardHeader>
@@ -32,15 +42,15 @@ export function ServiceCard({ service }: ServiceCardProps) {
           {service.description}
         </p>
       </CardContent>
-      <CardFooter className="pt-4 border-t bg-slate-50/50 dark:bg-slate-800/20 flex items-center justify-between mt-auto">
+      <CardFooter className="pt-6 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-800/10 flex items-center justify-between mt-auto">
         <div className="flex flex-col">
-          <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Price</span>
-          <span className="text-xl font-bold text-foreground">${service.price.toFixed(2)}</span>
+          <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">Entry Price</span>
+          <span className="text-2xl font-bold text-cyan-600">${service.price.toFixed(2)}</span>
         </div>
         <Link to={`/service/${service.id}`}>
-          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 rounded-full group/btn px-4">
-            View
-            <ArrowRight className="ml-1.5 h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-1" />
+          <Button size="sm" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full group/btn px-6 h-10 shadow-lg shadow-cyan-500/20">
+            Unlock
+            <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
           </Button>
         </Link>
       </CardFooter>

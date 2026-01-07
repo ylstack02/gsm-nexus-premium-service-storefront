@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 export function ServiceSlider() {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [
-    AutoScroll({ playOnInit: true, speed: 1, stopOnInteraction: false })
+    AutoScroll({ playOnInit: true, speed: 1 })
   ]);
   return (
     <div className="relative py-12 bg-slate-50/50 dark:bg-slate-900/20 border-y border-white/5">

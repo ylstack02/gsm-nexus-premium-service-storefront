@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { OrderSummary } from '@/components/checkout/OrderSummary';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,8 +10,9 @@ import { useStore } from '@/store/use-store';
 import { useMutation } from '@tanstack/react-query';
 import { createOrder } from '@/lib/api-client';
 import { toast } from 'sonner';
-import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight } from 'lucide-react';
+import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 export function CheckoutPage() {
   const cart = useStore(s => s.cart);
   const clearCart = useStore(s => s.clearCart);
@@ -18,9 +20,9 @@ export function CheckoutPage() {
   const lastOrderId = useStore(s => s.lastOrderId);
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const mutation = useMutation({
     mutationFn: (data: { email: string; items: typeof cart }) => {
-      // For simplicity in this demo, we'll just process the first item
       const item = data.items[0];
       return createOrder({
         customerEmail: data.email,
@@ -31,48 +33,67 @@ export function CheckoutPage() {
     onSuccess: (data) => {
       setLastOrderId(data.trackingId);
       clearCart();
-      toast.success('Order placed successfully!');
+      toast.success('Transaction Successful');
     },
     onError: (error) => {
-      toast.error('Failed to place order: ' + (error as Error).message);
+      toast.error('Processing error: ' + (error as Error).message);
     }
   });
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) return;
     if (email !== confirmEmail) {
-      toast.error('Emails do not match');
+      toast.error('Email verification mismatch');
       return;
     }
     mutation.mutate({ email, items: cart });
   };
   if (lastOrderId) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
         <Navbar />
-        <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-          <div className="mb-8 flex justify-center">
-            <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-600">
-              <CheckCircle className="w-12 h-12" />
-            </div>
+        <div className="max-w-3xl mx-auto px-4 py-20 text-center relative">
+          {/* Confetti Celebration Simulation */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: [0, 1, 0], scale: [0, 4, 6], x: (i - 2.5) * 100, y: (i % 2 === 0 ? -100 : 100) }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                className="absolute left-1/2 top-1/2 w-8 h-8 rounded-full bg-cyan-500/10 blur-xl"
+              />
+            ))}
           </div>
-          <h1 className="text-4xl font-bold mb-4">Order Received!</h1>
-          <p className="text-muted-foreground text-lg mb-8">
-            Your request has been queued for processing. Use the ID below to track your status.
+          <CheckoutStepper currentStep={3} />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-8 flex justify-center"
+          >
+            <div className="w-24 h-24 bg-cyan-100 dark:bg-cyan-900/30 rounded-full flex items-center justify-center text-cyan-600 cyan-glow">
+              <CheckCircle className="w-14 h-14" />
+            </div>
+          </motion.div>
+          <h1 className="text-4xl font-display font-bold mb-4">Transmission Successful!</h1>
+          <p className="text-muted-foreground text-lg mb-10 max-w-lg mx-auto">
+            Your request has been successfully dispatched to our secure API cluster. 
+            Keep your tracking ID for status lookups.
           </p>
-          <div className="bg-white dark:bg-slate-900 border rounded-2xl p-8 mb-8 shadow-sm">
-            <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-2">Tracking ID</div>
-            <div className="text-4xl font-mono font-bold text-blue-600">{lastOrderId}</div>
+          <div className="glass-premium rounded-3xl p-10 mb-10 shadow-2xl relative">
+            <div className="absolute top-4 right-4 text-[10px] font-mono text-cyan-500/50 uppercase tracking-widest">Global Order ID</div>
+            <div className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-3">Your Tracking ID</div>
+            <div className="text-5xl font-mono font-bold text-cyan-600">{lastOrderId}</div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={`/track?id=${lastOrderId}`}>
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 rounded-full px-8">
-                Track Order Status
+              <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full px-10 h-14 shadow-lg shadow-cyan-500/20">
+                Monitor Live Status
               </Button>
             </Link>
             <Link to="/catalog">
-              <Button size="lg" variant="outline" className="rounded-full px-8">
-                Back to Store
+              <Button size="lg" variant="outline" className="rounded-full px-10 h-14 glass-premium">
+                New Order
               </Button>
             </Link>
           </div>
@@ -84,86 +105,100 @@ export function CheckoutPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <h1 className="text-3xl font-display font-bold mb-8">Checkout</h1>
+        <CheckoutStepper currentStep={2} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">1. Guest Information</CardTitle>
+            <Card className="glass-premium rounded-2xl overflow-hidden">
+              <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-800/20">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center">1</span>
+                  Recipient Verification
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="pt-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="you@example.com" 
+                    <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email Address</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="specialist@domain.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      required 
+                      className="h-12 rounded-xl focus-visible:ring-cyan-500/20"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirmEmail">Confirm Email</Label>
-                    <Input 
-                      id="confirmEmail" 
-                      type="email" 
-                      placeholder="you@example.com"
+                    <Label htmlFor="confirmEmail" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Verify Email</Label>
+                    <Input
+                      id="confirmEmail"
+                      type="email"
+                      placeholder="Repeat email"
                       value={confirmEmail}
                       onChange={(e) => setConfirmEmail(e.target.value)}
-                      required 
+                      className="h-12 rounded-xl focus-visible:ring-cyan-500/20"
                     />
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground italic">
-                  Order status updates and final results will be sent to this address.
-                </p>
+                <div className="flex items-start gap-3 p-4 bg-cyan-50 dark:bg-cyan-900/10 border border-cyan-100 dark:border-cyan-900/30 rounded-xl text-xs text-cyan-700 dark:text-cyan-400">
+                  <Zap className="w-4 h-4 shrink-0 mt-0.5" />
+                  We use this address to send your finalized unlock codes and security reports.
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">2. Payment Method</CardTitle>
+            <Card className="glass-premium rounded-2xl overflow-hidden">
+              <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-800/20">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-full bg-cyan-500 text-white text-xs flex items-center justify-center">2</span>
+                  Payment Gateway
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="pt-6">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
-                    { id: 'card', name: 'Card', icon: <CreditCard className="w-5 h-5" /> },
+                    { id: 'card', name: 'Credit Card', icon: <CreditCard className="w-5 h-5" /> },
                     { id: 'paypal', name: 'PayPal', icon: <Wallet className="w-5 h-5" /> },
                     { id: 'crypto', name: 'Crypto', icon: <Smartphone className="w-5 h-5" /> },
                   ].map((method) => (
-                    <div 
+                    <button
                       key={method.id}
-                      className="border rounded-xl p-4 flex flex-col items-center gap-2 cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all bg-card"
+                      onClick={() => setPaymentMethod(method.id)}
+                      className={cn(
+                        "flex flex-col items-center gap-3 p-6 rounded-2xl border-2 transition-all group",
+                        paymentMethod === method.id 
+                          ? "border-cyan-500 bg-cyan-500/5 cyan-glow shadow-inner" 
+                          : "border-slate-100 dark:border-slate-800 hover:border-cyan-500/30 bg-card"
+                      )}
                     >
-                      <div className="text-blue-600">{method.icon}</div>
-                      <span className="text-sm font-medium">{method.name}</span>
-                    </div>
+                      <div className={cn(
+                        "p-3 rounded-full transition-colors",
+                        paymentMethod === method.id ? "bg-cyan-500 text-white" : "bg-slate-100 dark:bg-slate-800 text-muted-foreground group-hover:bg-cyan-500/20"
+                      )}>
+                        {method.icon}
+                      </div>
+                      <span className={cn("text-xs font-bold uppercase tracking-widest", paymentMethod === method.id ? "text-cyan-600" : "text-muted-foreground")}>
+                        {method.name}
+                      </span>
+                    </button>
                   ))}
                 </div>
               </CardContent>
             </Card>
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0">
-                <Smartphone className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-blue-900 dark:text-blue-100">Instant Verification Enabled</p>
-                <p className="text-xs text-blue-700 dark:text-blue-300">Our servers will begin processing your IMEI verification within 60 seconds of payment.</p>
-              </div>
-            </div>
           </div>
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <OrderSummary />
-              <Button 
+              <Button
                 onClick={handlePlaceOrder}
                 disabled={cart.length === 0 || mutation.isPending}
-                className="w-full mt-6 bg-blue-600 hover:bg-blue-700 h-14 text-lg font-bold rounded-xl group"
+                className="w-full mt-8 bg-cyan-500 hover:bg-cyan-600 h-16 text-lg font-bold rounded-2xl group cyan-glow"
               >
-                {mutation.isPending ? 'Processing...' : 'Place Order'}
+                {mutation.isPending ? 'Processing...' : 'Complete Transmission'}
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
+              <p className="mt-4 text-[10px] text-center text-muted-foreground uppercase tracking-[0.2em]">
+                Protected by 256-bit SSL encryption
+              </p>
             </div>
           </div>
         </div>
