@@ -13,10 +13,32 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { cn } from '@/lib/utils';
+// Move NavLink outside of the main component to avoid Rule of Hooks violations
+// and unnecessary re-renders when the parent state changes.
+const NavLink = ({ to, children, currentPath }: { to: string, children: React.ReactNode, currentPath: string }) => {
+  const isActive = currentPath === to;
+  return (
+    <Link
+      to={to}
+      className={cn(
+        "text-[10px] font-bold uppercase tracking-[0.2em] transition-all relative py-1",
+        isActive ? "text-cyan-500" : "text-muted-foreground hover:text-foreground"
+      )}
+    >
+      {children}
+      {isActive && (
+        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-500 rounded-full" />
+      )}
+    </Link>
+  );
+};
 export function Navbar() {
-  const cartCount = useStore(s => s.cart.length);
+  // ZUSTAND ZERO-TOLERANCE: One field per selector
+  const cart = useStore(s => s.cart);
+  const cartCount = cart.length;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
   const [scrolled, setScrolled] = useState(false);
@@ -24,33 +46,16 @@ export function Navbar() {
   const location = useLocation();
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchVal.trim()) {
-      navigate(`/catalog?q=${encodeURIComponent(searchVal)}`);
+      navigate(`/catalog?q=${encodeURIComponent(searchVal.trim())}`);
       setSearchVal('');
       setMobileMenuOpen(false);
     }
-  };
-  const NavLink = ({ to, children, isActive: manualActive }: { to: string, children: React.ReactNode, isActive?: boolean }) => {
-    const isActive = manualActive ?? location.pathname === to;
-    return (
-      <Link
-        to={to}
-        className={cn(
-          "text-[10px] font-bold uppercase tracking-[0.2em] transition-all relative py-1",
-          isActive ? "text-cyan-500" : "text-muted-foreground hover:text-foreground"
-        )}
-      >
-        {children}
-        {isActive && (
-          <span className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-500 rounded-full" />
-        )}
-      </Link>
-    );
   };
   const menuItems = [
     { title: "Apple Unlocks", desc: "Factory iPhone removals", slug: "apple-unlocks", icon: Shield },
@@ -120,7 +125,7 @@ export function Navbar() {
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <NavLink to="/track">Tracking</NavLink>
+                    <NavLink to="/track" currentPath={location.pathname}>Tracking</NavLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
                     <a href="#resellers" className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-cyan-500 transition-all">
@@ -128,6 +133,8 @@ export function Navbar() {
                     </a>
                   </NavigationMenuItem>
                 </NavigationMenuList>
+                {/* Critical: NavigationMenuViewport is required for properly rendering floating content */}
+                <NavigationMenuViewport />
               </NavigationMenu>
             </div>
           </div>
