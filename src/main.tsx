@@ -14,8 +14,8 @@ import '@/index.css'
 import { HomePage } from '@/pages/HomePage'
 import { CatalogPage } from '@/pages/CatalogPage'
 import { ServiceDetailPage } from '@/pages/ServiceDetailPage'
-import { ShoppingCart, Search } from 'lucide-react';
-import { Placeholder } from '@/components/ui/Placeholder';
+import { CheckoutPage } from '@/pages/CheckoutPage'
+import { TrackingPage } from '@/pages/TrackingPage'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -42,12 +42,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/checkout",
-    element: <Placeholder name="Checkout" icon={ShoppingCart} description="Secure multi-gateway checkout flow coming soon." />,
+    element: <CheckoutPage />,
     errorElement: <RouteErrorBoundary />,
   },
   {
     path: "/track",
-    element: <Placeholder name="Order Tracking" icon={Search} description="Global IMEI tracking engine coming soon." />,
+    element: <TrackingPage />,
     errorElement: <RouteErrorBoundary />,
   },
 ]);

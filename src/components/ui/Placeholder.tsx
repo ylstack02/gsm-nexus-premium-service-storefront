@@ -1,5 +1,5 @@
 import React from 'react';
-import { LucideIcon, ArrowLeft } from 'lucide-react';
+import { LucideIcon, ArrowLeft, ShoppingCart, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
@@ -33,14 +33,14 @@ export function Placeholder({ name, icon: Icon, description }: PlaceholderProps)
 export const CheckoutPlaceholder = () => (
   <Placeholder 
     name="Checkout" 
-    icon={require('lucide-react').ShoppingCart} 
+    icon={ShoppingCart} 
     description="The secure checkout flow is being finalized. You will soon be able to pay via Crypto, PayPal, and Card."
   />
 );
 export const TrackingPlaceholder = () => (
   <Placeholder 
     name="Order Tracking" 
-    icon={require('lucide-react').Search} 
+    icon={Search} 
     description="Our real-time tracking engine is connecting to global server APIs. Live status updates coming soon."
   />
 );

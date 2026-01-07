@@ -10,7 +10,7 @@ export function OrderSummary() {
     <Card className="border-2 shadow-sm">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <ShoppingBag className="w-5 h-5 text-cyan-600" />
+          <ShoppingBag className="w-5 h-5 text-blue-600" />
           Order Summary
         </CardTitle>
       </CardHeader>
@@ -47,25 +47,25 @@ export function OrderSummary() {
           </div>
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>Transaction Fee</span>
-            <span className="text-emerald-600 font-bold">FREE</span>
+            <span className="text-emerald-600">FREE</span>
           </div>
           <div className="flex justify-between text-lg font-bold border-t pt-3">
             <span>Total</span>
-            <span className="text-cyan-600">${total.toFixed(2)}</span>
+            <span className="text-blue-600">${total.toFixed(2)}</span>
           </div>
         </div>
-        <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2">
-            <Tag className="w-3 h-3 text-cyan-600" />
+        <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-dashed">
+          <div className="flex items-center gap-2 text-xs font-medium mb-1">
+            <Tag className="w-3 h-3 text-blue-600" />
             Promo Code
           </div>
           <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Enter code"
-              className="flex-1 bg-white dark:bg-slate-800 border rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-1 focus:ring-cyan-500"
+            <input 
+              type="text" 
+              placeholder="Enter code" 
+              className="flex-1 bg-white dark:bg-slate-800 border rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-1 focus:ring-blue-500" 
             />
-            <button type="button" className="text-xs font-bold text-cyan-600 px-2 hover:text-cyan-700">Apply</button>
+            <button className="text-xs font-bold text-blue-600 px-2">Apply</button>
           </div>
         </div>
       </CardContent>
