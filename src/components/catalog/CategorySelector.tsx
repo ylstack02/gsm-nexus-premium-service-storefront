@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetClose,
+  SheetDescription,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ServiceCategory } from '@shared/types';
@@ -181,7 +182,7 @@ export function CategorySelector({ categories, selectedIds, onToggle, onClear }:
           <div className="pt-4">
             <Button
               className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold text-xs uppercase tracking-widest"
-              onClick={() => setOpen(false)}
+              onClick={() => { onClear(); setOpen(false); }}
             >
               Apply Selection
             </Button>
