@@ -15,15 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Search,
-  Layers,
-  Smartphone,
-  ShieldCheck,
-  Server,
-  Cpu,
-  X,
-  ArrowUpDown
+import { 
+  Search, 
+  X, 
+  ArrowUpDown,
+  FilterX
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Service } from '@shared/types';
@@ -88,9 +84,9 @@ export function CatalogPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
         <div className="space-y-8">
           <header className="flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-center glass-premium p-3 rounded-2xl border shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-4 items-center glass-premium p-3 rounded-2xl border border-cyan-500/10 shadow-sm">
               <CategorySelector 
-                categories={categories || []}
+                categories={categories || []} 
                 selectedIds={selectedCategories}
                 onToggle={toggleCategory}
                 onClear={() => {
@@ -113,8 +109,8 @@ export function CatalogPage() {
               </Select>
               <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Filter by model or IMEI..."
+                <Input 
+                  placeholder="Model, IMEI, or Cluster..."
                   className="pl-12 h-12 border-none bg-slate-100 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-cyan-500/20 rounded-xl text-sm font-medium"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -122,11 +118,15 @@ export function CatalogPage() {
               </form>
             </div>
             {(selectedCategories.length > 0 || search) && (
-              <div className="flex flex-wrap items-center gap-2 px-2">
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-wrap items-center gap-2 px-2"
+              >
                 {selectedCategories.map(catId => (
                   <Badge key={catId} className="bg-cyan-500 text-white gap-1 pl-3 pr-1 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-lg shadow-cyan-500/10">
                     {categories?.find(c => c.id === catId || c.slug === catId)?.name || catId}
-                    <button onClick={() => toggleCategory(catId)} className="hover:bg-white/20 rounded-full p-0.5 ml-1">
+                    <button onClick={() => toggleCategory(catId)} className="hover:bg-white/20 rounded-full p-0.5 ml-1 transition-colors">
                       <X className="w-3 h-3" />
                     </button>
                   </Badge>
@@ -134,18 +134,18 @@ export function CatalogPage() {
                 {search && (
                   <Badge variant="outline" className="gap-1 pl-3 pr-1 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-slate-900 border-cyan-500/20">
                     Query: {search}
-                    <button onClick={() => { setSearch(''); updateURL('', selectedCategories); }} className="hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full p-0.5 ml-1">
+                    <button onClick={() => { setSearch(''); updateURL('', selectedCategories); }} className="hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full p-0.5 ml-1 transition-colors">
                       <X className="w-3 h-3" />
                     </button>
                   </Badge>
                 )}
-                <button
+                <button 
                   onClick={() => { setSelectedCategories([]); setSearch(''); updateURL('', []); }}
                   className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-cyan-500 px-2 transition-colors"
                 >
                   Clear all filters
                 </button>
-              </div>
+              </motion.div>
             )}
           </header>
           <main className="w-full">
@@ -153,32 +153,32 @@ export function CatalogPage() {
               {loadingServices ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                    <Skeleton key={i} className="aspect-[4/5] w-full rounded-3xl" />
+                    <Skeleton key={i} className="aspect-[4/5] w-full rounded-2xl md:rounded-3xl" />
                   ))}
                 </div>
               ) : sortedServices.length === 0 ? (
-                <motion.div
+                <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center py-32 text-center glass-premium rounded-[2.5rem] border-dashed"
+                  className="flex flex-col items-center justify-center py-32 text-center glass-premium rounded-[2.5rem] border-dashed border-cyan-500/20"
                 >
-                  <div className="bg-slate-100 dark:bg-slate-800 p-8 rounded-full mb-6">
-                    <Search className="w-12 h-12 text-muted-foreground opacity-20" />
+                  <div className="bg-cyan-500/5 p-8 rounded-full mb-6 ring-1 ring-cyan-500/10">
+                    <FilterX className="w-12 h-12 text-cyan-500/40" />
                   </div>
                   <h3 className="text-2xl font-display font-bold">No results found</h3>
                   <p className="text-muted-foreground mt-2 max-w-sm px-6">
-                    We couldn't find any services matching your current configuration. Try adjusting your cluster selection.
+                    We couldn't find any services matching your current configuration. Try adjusting your cluster selection or search term.
                   </p>
-                  <Button
-                    variant="link"
+                  <Button 
+                    variant="link" 
                     onClick={() => { setSearch(''); setSelectedCategories([]); updateURL('', []); }}
                     className="mt-6 text-cyan-600 font-bold uppercase tracking-widest text-xs"
                   >
-                    Reset Dashboard
+                    Reset Global Filters
                   </Button>
                 </motion.div>
               ) : (
-                <motion.div
+                <motion.div 
                   layout
                   className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
                 >
@@ -188,6 +188,7 @@ export function CatalogPage() {
                       key={service.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.2 }}
                     >
                       <ServiceCard service={service} />

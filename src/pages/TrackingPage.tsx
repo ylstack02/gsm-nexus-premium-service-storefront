@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { StatusTimeline } from '@/components/tracking/StatusTimeline';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { getOrderByTrackingId } from '@/lib/api-client';
-import { Search, AlertCircle, FileSearch, History, ShieldCheck, ExternalLink } from 'lucide-react';
+import { 
+  Search, 
+  AlertCircle, 
+  FileSearch, 
+  History, 
+  ShieldCheck, 
+  ExternalLink,
+  ArrowRight
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Order } from '@shared/types';
 export function TrackingPage() {
@@ -42,7 +50,7 @@ export function TrackingPage() {
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
-          <motion.h1
+          <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-display font-bold mb-6"
@@ -53,7 +61,7 @@ export function TrackingPage() {
             Connect to our global server cluster for real-time processing updates on your GSM services.
           </p>
         </div>
-        <motion.form
+        <motion.form 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           onSubmit={handleSearch}
@@ -61,17 +69,17 @@ export function TrackingPage() {
         >
           <div className="relative group">
             <div className="absolute -inset-1 bg-cyan-500 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition duration-1000"></div>
-            <div className="relative flex gap-2 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl">
+            <div className="relative flex flex-col sm:flex-row gap-2 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
+                <Input 
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  placeholder="Order ID (e.g. NEX-123456) or IMEI"
+                  placeholder="NEX-123456 or IMEI"
                   className="h-16 pl-14 border-none bg-transparent text-lg font-mono focus-visible:ring-0 placeholder:text-muted-foreground/50"
                 />
               </div>
-              <Button type="submit" className="h-16 px-10 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-md font-bold shadow-lg shadow-cyan-500/20">
+              <Button type="submit" className="h-16 px-10 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-md font-bold shadow-lg shadow-cyan-500/20 transition-all">
                 Track Status
               </Button>
             </div>
@@ -88,24 +96,28 @@ export function TrackingPage() {
             </div>
           )}
           {isError && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass-premium border-red-500/20 rounded-3xl p-10 text-center max-w-2xl mx-auto"
+              className="glass-premium border-red-500/20 rounded-3xl p-10 text-center max-w-2xl mx-auto shadow-2xl shadow-red-500/5"
             >
               <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center text-red-600 mx-auto mb-6">
                 <AlertCircle className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-3">Transmission Interrupted</h3>
-              <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-8">
-                The specified Tracking ID could not be matched against our active databases.
-                Please verify the ID from your confirmation email.
+              <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-8 leading-relaxed">
+                The specified Tracking ID could not be matched. Please ensure you copied the ID exactly as it appears in your receipt, or try searching by IMEI.
               </p>
-              <Button variant="outline" onClick={() => setSearchVal('')} className="rounded-full px-8">Try Another ID</Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button variant="outline" onClick={() => setSearchVal('')} className="rounded-full px-8 glass-premium">Retry Search</Button>
+                <Link to="/contact">
+                  <Button variant="ghost" className="rounded-full px-8 text-cyan-600 font-bold">Contact Support</Button>
+                </Link>
+              </div>
             </motion.div>
           )}
           {order && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="space-y-8"
@@ -125,37 +137,37 @@ export function TrackingPage() {
                   <StatusTimeline order={order} />
                 </div>
                 <div className="space-y-6">
-                  <div className="glass-premium rounded-3xl p-8 shadow-sm">
+                  <div className="glass-premium rounded-3xl p-8 shadow-sm border-cyan-500/10">
                     <h3 className="text-xs font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
                       <FileSearch className="w-3.5 h-3.5 text-cyan-500" />
                       Session Meta
                     </h3>
                     <div className="space-y-6 text-sm">
-                      <div className="flex flex-col gap-1 border-b border-white/10 pb-4">
-                        <span className="text-[10px] font-bold uppercase text-muted-foreground">Internal Tracking ID</span>
+                      <div className="flex flex-col gap-1 border-b border-slate-100 dark:border-white/5 pb-4">
+                        <span className="text-[10px] font-bold uppercase text-muted-foreground">Internal ID</span>
                         <span className="font-mono font-bold text-cyan-500">{order.trackingId}</span>
                       </div>
-                      <div className="flex flex-col gap-1 border-b border-white/10 pb-4">
+                      <div className="flex flex-col gap-1 border-b border-slate-100 dark:border-white/5 pb-4">
                         <span className="text-[10px] font-bold uppercase text-muted-foreground">Session Start</span>
                         <span className="font-medium">{new Date(order.createdAt).toLocaleString()}</span>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-bold uppercase text-muted-foreground">Encrypted Channel</span>
-                        <span className="font-medium flex items-center gap-2 truncate">
+                        <span className="text-[10px] font-bold uppercase text-muted-foreground">Notification Endpoint</span>
+                        <span className="font-medium flex items-center gap-2 truncate text-xs">
                           {order.customerEmail}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="p-6 rounded-3xl bg-slate-900 text-white relative overflow-hidden group">
+                  <div className="p-6 rounded-3xl bg-slate-900 text-white relative overflow-hidden group border border-white/5 shadow-xl">
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                       <ExternalLink className="w-20 h-20" />
                     </div>
                     <h4 className="font-bold mb-2">Need Live Support?</h4>
                     <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-                      Our technical engineers are available on Telegram for enterprise escalations.
+                      Our technical engineers are available on Telegram for enterprise escalations and API assistance.
                     </p>
-                    <Button size="sm" className="w-full bg-white/10 hover:bg-white/20 text-white rounded-xl h-10 border border-white/10">
+                    <Button size="sm" className="w-full bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl h-10 border-none shadow-lg shadow-cyan-500/20 font-bold uppercase tracking-widest text-[10px]">
                       Open Telegram API
                     </Button>
                   </div>
@@ -164,37 +176,40 @@ export function TrackingPage() {
             </motion.div>
           )}
           {!initialId && !isLoading && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-12 text-center"
             >
               {history.length > 0 && (
-                <div className="w-full max-w-lg">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center justify-center gap-2">
-                    <History className="w-3 h-3" />
-                    Recent Activity
+                <div className="w-full max-w-lg mb-12">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center justify-center gap-2">
+                    <History className="w-3 h-3 text-cyan-500" />
+                    Recent Activity History
                   </h3>
                   <div className="flex flex-col gap-2">
                     {history.map(id => (
-                      <button
+                      <button 
                         key={id}
                         onClick={() => setSearchParams({ id })}
-                        className="p-4 glass-premium rounded-2xl flex items-center justify-between group hover:border-cyan-500/50 transition-all"
+                        className="p-4 glass-premium rounded-2xl flex items-center justify-between group hover:border-cyan-500/50 transition-all border-cyan-500/10 shadow-sm"
                       >
-                        <span className="font-mono text-sm">{id}</span>
-                        <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-cyan-500" />
+                        <span className="font-mono text-sm font-bold text-cyan-600">{id}</span>
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground group-hover:text-cyan-500 uppercase tracking-widest">
+                          Re-scan
+                          <ArrowRight className="w-3 h-3" />
+                        </div>
                       </button>
                     ))}
                   </div>
                 </div>
               )}
-              <div className="mt-16 flex flex-col items-center">
-                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-muted-foreground mb-6">
-                  <ShieldCheck className="w-10 h-10" />
+              <div className="flex flex-col items-center mt-8">
+                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-muted-foreground mb-6 ring-1 ring-slate-200 dark:ring-slate-700">
+                  <ShieldCheck className="w-10 h-10 opacity-30" />
                 </div>
                 <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
-                  Authentication records are retained for 30 days. Your ID is encrypted at rest.
+                  Authentication records are retained for 30 days. All tracking data is encrypted at rest in our secure cluster.
                 </p>
               </div>
             </motion.div>
