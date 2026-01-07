@@ -21,15 +21,26 @@ export const useStore = create<AppState>((set) => ({
   recentSearches: [],
   trackingModalOpen: false,
   addToCart: (service, formData) => set((state) => ({
-    cart: [...state.cart, { service, formData, quantity: 1 }]
+    cart: [...state.cart, { 
+      service, 
+      formData, 
+      quantity: 1 
+    }]
   })),
   removeFromCart: (serviceId) => set((state) => ({
     cart: state.cart.filter((item) => item.service.id !== serviceId)
   })),
-  clearCart: () => set({ cart: [] }),
-  setTrackingModal: (open) => set({ trackingModalOpen: open }),
+  clearCart: () => set({ 
+    cart: [] 
+  }),
+  setTrackingModal: (open) => set({ 
+    trackingModalOpen: open 
+  }),
   addRecentSearch: (query) => set((state) => {
+    if (!query.trim()) return state;
     const filtered = state.recentSearches.filter(q => q !== query);
-    return { recentSearches: [query, ...filtered].slice(0, 5) };
+    return { 
+      recentSearches: [query, ...filtered].slice(0, 5) 
+    };
   }),
 }));

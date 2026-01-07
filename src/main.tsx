@@ -1,7 +1,7 @@
 import '@/lib/errorReporter';
 import { enableMapSet } from "immer";
 enableMapSet();
-import { StrictMode } from 'react'
+import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   createBrowserRouter,
@@ -12,13 +12,18 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
 import '@/index.css'
 import { HomePage } from '@/pages/HomePage'
-// Placeholder components for Phase 2/3
-const Placeholder = ({ name }: { name: string }) => (
-  <div className="flex items-center justify-center min-h-screen">
-    <p className="text-muted-foreground">{name} View Coming Soon</p>
-  </div>
-);
-const queryClient = new QueryClient();
+import { CatalogPage } from '@/pages/CatalogPage'
+import { ServiceDetailPage } from '@/pages/ServiceDetailPage'
+import { ShoppingCart, Search } from 'lucide-react';
+import { Placeholder } from '@/components/ui/Placeholder';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,22 +32,22 @@ const router = createBrowserRouter([
   },
   {
     path: "/catalog",
-    element: <Placeholder name="Catalog" />,
+    element: <CatalogPage />,
     errorElement: <RouteErrorBoundary />,
   },
   {
     path: "/service/:id",
-    element: <Placeholder name="Service Detail" />,
+    element: <ServiceDetailPage />,
     errorElement: <RouteErrorBoundary />,
   },
   {
     path: "/checkout",
-    element: <Placeholder name="Checkout" />,
+    element: <Placeholder name="Checkout" icon={ShoppingCart} description="Secure multi-gateway checkout flow coming soon." />,
     errorElement: <RouteErrorBoundary />,
   },
   {
     path: "/track",
-    element: <Placeholder name="Order Tracking" />,
+    element: <Placeholder name="Order Tracking" icon={Search} description="Global IMEI tracking engine coming soon." />,
     errorElement: <RouteErrorBoundary />,
   },
 ]);

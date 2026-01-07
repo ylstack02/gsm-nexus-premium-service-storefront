@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -18,31 +18,29 @@ import {
 } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { ShoppingCart, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 interface DynamicFormProps {
   service: Service;
 }
 export function DynamicForm({ service }: DynamicFormProps) {
   const addToCart = useStore(s => s.addToCart);
-  const formSchema = useMemo(() => {
-    const schemaShape: Record<string, any> = {};
-    service.schema.fields.forEach(field => {
-      let validator = z.string();
-      if (field.required) {
-        validator = validator.min(1, `${field.label} is required`);
-      } else {
-        validator = validator.optional() as any;
-      }
-      if (field.type === 'imei') {
-        validator = validator.length(15, "IMEI must be exactly 15 digits").regex(/^\d+$/, "IMEI must only contain numbers");
-      }
-      if (field.validation?.pattern) {
-        validator = validator.regex(new RegExp(field.validation.pattern), field.validation.message || "Invalid format");
-      }
-      schemaShape[field.name] = validator;
-    });
-    return z.object(schemaShape);
-  }, [service.schema.fields]);
+  // Generate dynamic schema based on service fields
+  const schemaShape: Record<string, any> = {};
+  service.schema.fields.forEach(field => {
+    let validator = z.string();
+    if (field.required) {
+      validator = validator.min(1, `${field.label} is required`);
+    } else {
+      validator = validator.optional() as any;
+    }
+    if (field.type === 'imei') {
+      validator = validator.length(15, "IMEI must be exactly 15 digits").regex(/^\d+$/, "IMEI must only contain numbers");
+    }
+    if (field.validation?.pattern) {
+      validator = validator.regex(new RegExp(field.validation.pattern), field.validation.message || "Invalid format");
+    }
+    schemaShape[field.name] = validator;
+  });
+  const formSchema = z.object(schemaShape);
   type FormValues = z.infer<typeof formSchema>;
   const {
     register,
@@ -59,11 +57,11 @@ export function DynamicForm({ service }: DynamicFormProps) {
     });
   };
   return (
-    <Card className="border-2 border-cyan-500/20 shadow-xl shadow-cyan-500/5 overflow-hidden">
+    <Card className="border-2 border-blue-600/10 shadow-xl shadow-blue-500/5 overflow-hidden">
       <CardHeader className="bg-slate-50 dark:bg-slate-900/50 border-b">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">Order Details</CardTitle>
-          <div className="text-2xl font-bold text-cyan-600">
+          <div className="text-2xl font-bold text-blue-600">
             ${service.price.toFixed(2)}
           </div>
         </div>
@@ -80,7 +78,7 @@ export function DynamicForm({ service }: DynamicFormProps) {
               </Label>
               {field.type === 'select' ? (
                 <Select onValueChange={(val) => setValue(field.name, val)}>
-                  <SelectTrigger className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus:ring-cyan-500/20"}>
+                  <SelectTrigger className={errors[field.name] ? "border-red-500 bg-red-50/50" : ""}>
                     <SelectValue placeholder={field.placeholder || `Select ${field.label}`} />
                   </SelectTrigger>
                   <SelectContent>
@@ -95,45 +93,38 @@ export function DynamicForm({ service }: DynamicFormProps) {
                 <Textarea
                   {...register(field.name as any)}
                   placeholder={field.placeholder}
-                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus-visible:ring-cyan-500/20"}
+                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : ""}
                 />
               ) : (
                 <Input
                   {...register(field.name as any)}
                   type={field.type === 'number' ? 'number' : 'text'}
                   placeholder={field.placeholder}
-                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : "focus-visible:ring-cyan-500/20"}
+                  className={errors[field.name] ? "border-red-500 bg-red-50/50" : ""}
                 />
               )}
-              <AnimatePresence mode="wait">
-                {errors[field.name] && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="text-xs text-red-500 flex items-center gap-1 mt-1 overflow-hidden"
-                  >
-                    <AlertCircle className="w-3 h-3" />
-                    {errors[field.name]?.message as string}
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              {errors[field.name] && (
+                <p className="text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {errors[field.name]?.message as string}
+                </p>
+              )}
             </div>
           ))}
         </form>
       </CardContent>
       <CardFooter className="bg-slate-50 dark:bg-slate-900/50 border-t flex flex-col gap-3 pt-6">
-        <Button
-          type="submit"
-          form="service-order-form"
-          className="w-full bg-cyan-500 hover:bg-cyan-600 h-12 text-md font-bold shadow-lg shadow-cyan-500/20"
+        <Button 
+          type="submit" 
+          form="service-order-form" 
+          className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-md font-bold"
           disabled={isSubmitting}
         >
           <ShoppingCart className="w-5 h-5 mr-2" />
           Add to Cart
         </Button>
         <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest">
-          Secure GSM Protocol
+          Secure Server-Side Transmission
         </p>
       </CardFooter>
     </Card>
