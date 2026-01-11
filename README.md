@@ -1,6 +1,6 @@
 # Cloudflare Workers Full-Stack Template
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ylstack02/gsm-nexus-premium-service-storefront)
 
 A production-ready full-stack application template built on Cloudflare Workers, featuring a React frontend with Vite, shadcn/ui, and a backend powered by Hono with Durable Objects for scalable, stateful entity storage.
 
@@ -105,7 +105,7 @@ bun build  # Build frontend assets
 wrangler deploy
 ```
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ylstack02/gsm-nexus-premium-service-storefront)
 
 **Custom Domain**: Update `wrangler.jsonc` assets config. Assets served as SPA.
 
