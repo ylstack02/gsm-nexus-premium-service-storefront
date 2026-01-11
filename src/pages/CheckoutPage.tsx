@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { OrderSummary } from '@/components/checkout/OrderSummary';
 import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
@@ -11,11 +12,11 @@ import { useMutation } from '@tanstack/react-query';
 import { createOrder } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { CheckCircle, CreditCard, Wallet, Smartphone, ArrowRight, Zap, Copy, Check } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Order } from '@shared/types';
 export function CheckoutPage() {
+  const navigate = useNavigate();
   const cart = useStore(s => s.cart);
   const clearCart = useStore(s => s.clearCart);
   const setLastOrderId = useStore(s => s.setLastOrderId);
@@ -24,6 +25,13 @@ export function CheckoutPage() {
   const [confirmEmail, setConfirmEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [copied, setCopied] = useState(false);
+  // Redirection logic for empty cart (only if not viewing a success screen)
+  useEffect(() => {
+    if (cart.length === 0 && !lastOrderId) {
+      const timer = setTimeout(() => navigate('/catalog'), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [cart.length, lastOrderId, navigate]);
   const mutation = useMutation<Order, Error, { email: string; items: typeof cart }>({
     mutationFn: (data) => {
       const item = data.items[0];
@@ -53,28 +61,21 @@ export function CheckoutPage() {
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) return;
-    if (email !== confirmEmail) {
-      toast.error('Email verification mismatch');
+    if (!email.trim() || email !== confirmEmail) {
+      toast.error('Please verify your email address');
       return;
     }
     mutation.mutate({ email, items: cart });
+  };
+  const handleNewOrder = () => {
+    setLastOrderId(null);
+    navigate('/catalog');
   };
   if (lastOrderId) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 py-16 md:py-24 text-center relative">
-          <div className="absolute inset-0 pointer-events-none">
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: [0, 1, 0], scale: [0, 4, 6], x: (i - 2.5) * 150, y: (i % 2 === 0 ? -150 : 150) }}
-                transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                className="absolute left-1/2 top-1/2 w-8 h-8 rounded-full bg-cyan-500/10 blur-xl"
-              />
-            ))}
-          </div>
           <CheckoutStepper currentStep={3} />
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -97,9 +98,9 @@ export function CheckoutPage() {
               <div className="text-4xl md:text-7xl font-mono font-bold text-cyan-600 tracking-tighter">
                 {lastOrderId}
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleCopyId}
                 className="h-12 w-12 rounded-2xl hover:bg-cyan-50 dark:hover:bg-cyan-950/30 transition-all active:scale-90"
               >
@@ -119,17 +120,32 @@ export function CheckoutPage() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={`/track?id=${lastOrderId}`}>
-              <Button size="xl" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full px-12 shadow-lg shadow-cyan-500/20 group">
+              <Button size="xl" className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-full px-12 shadow-lg shadow-cyan-500/20 group w-full sm:w-auto">
                 Monitor Live Status
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <Link to="/catalog">
-              <Button size="xl" variant="outline" className="rounded-full px-12 glass-premium border-cyan-500/20">
-                New Order
-              </Button>
-            </Link>
+            <Button size="xl" variant="outline" onClick={handleNewOrder} className="rounded-full px-12 glass-premium border-cyan-500/20 w-full sm:w-auto">
+              Start New Order
+            </Button>
           </div>
+        </div>
+      </div>
+    );
+  }
+  if (cart.length === 0) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center text-center p-4">
+        <Navbar />
+        <div className="space-y-6">
+          <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-muted-foreground mx-auto">
+            <ShoppingCart className="w-10 h-10 opacity-20" />
+          </div>
+          <h2 className="text-2xl font-bold">Your queue is empty</h2>
+          <p className="text-muted-foreground max-w-xs mx-auto">Redirecting you to the service catalog...</p>
+          <Link to="/catalog">
+            <Button variant="outline" className="rounded-full px-8">Browse Catalog</Button>
+          </Link>
         </div>
       </div>
     );

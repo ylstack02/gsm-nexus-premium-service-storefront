@@ -16,8 +16,6 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { cn } from '@/lib/utils';
-// Move NavLink outside of the main component to avoid Rule of Hooks violations
-// and unnecessary re-renders when the parent state changes.
 const NavLink = ({ to, children, currentPath }: { to: string, children: React.ReactNode, currentPath: string }) => {
   const isActive = currentPath === to;
   return (
@@ -36,7 +34,6 @@ const NavLink = ({ to, children, currentPath }: { to: string, children: React.Re
   );
 };
 export function Navbar() {
-  // ZUSTAND ZERO-TOLERANCE: One field per selector
   const cart = useStore(s => s.cart);
   const cartCount = cart.length;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -57,6 +54,7 @@ export function Navbar() {
       setMobileMenuOpen(false);
     }
   };
+  const closeMobileMenu = () => setMobileMenuOpen(false);
   const menuItems = [
     { title: "Apple Unlocks", desc: "Factory iPhone removals", slug: "apple-unlocks", icon: Shield },
     { title: "Samsung FRP", desc: "Instant Google locks", slug: "samsung-frp", icon: Activity },
@@ -128,12 +126,11 @@ export function Navbar() {
                     <NavLink to="/track" currentPath={location.pathname}>Tracking</NavLink>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <a href="#resellers" className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-cyan-500 transition-all">
+                    <a href="/#resellers" className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-cyan-500 transition-all">
                       Resellers
                     </a>
                   </NavigationMenuItem>
                 </NavigationMenuList>
-                {/* Critical: NavigationMenuViewport is required for properly rendering floating content */}
                 <NavigationMenuViewport />
               </NavigationMenu>
             </div>
@@ -192,7 +189,7 @@ export function Navbar() {
                       <p className="px-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Main Modules</p>
                       <Link
                         to="/catalog"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={closeMobileMenu}
                         className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors border border-transparent hover:border-cyan-500/20"
                       >
                         Browse Catalog
@@ -200,14 +197,14 @@ export function Navbar() {
                       </Link>
                       <Link
                         to="/track"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={closeMobileMenu}
                         className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors border border-transparent hover:border-cyan-500/20"
                       >
                         Track Order
                       </Link>
                       <a
-                        href="#resellers"
-                        onClick={() => setMobileMenuOpen(false)}
+                        href="/#resellers"
+                        onClick={closeMobileMenu}
                         className="flex items-center gap-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-xs uppercase tracking-widest hover:text-cyan-500 transition-colors border border-transparent hover:border-cyan-500/20"
                       >
                         <Globe className="w-4 h-4 text-cyan-500" />
@@ -216,7 +213,11 @@ export function Navbar() {
                     </div>
                     <div className="pt-8 border-t border-slate-100 dark:border-slate-800 space-y-4">
                       <p className="px-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">System</p>
-                      <Link to="/checkout" onClick={() => setMobileMenuOpen(false)} className="p-5 rounded-2xl bg-cyan-500 text-white font-bold flex justify-between items-center text-xs uppercase tracking-widest shadow-lg shadow-cyan-500/20">
+                      <Link 
+                        to="/checkout" 
+                        onClick={closeMobileMenu} 
+                        className="p-5 rounded-2xl bg-cyan-500 text-white font-bold flex justify-between items-center text-xs uppercase tracking-widest shadow-lg shadow-cyan-500/20"
+                      >
                         Order Queue
                         <span className="bg-white/20 px-3 py-1 rounded-full text-[10px]">{cartCount}</span>
                       </Link>

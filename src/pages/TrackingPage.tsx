@@ -13,7 +13,8 @@ import {
   History,
   ShieldCheck,
   ExternalLink,
-  ArrowRight
+  ArrowRight,
+  XCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Order } from '@shared/types';
@@ -29,28 +30,41 @@ export function TrackingPage() {
     retry: false
   });
   useEffect(() => {
+    const saved = localStorage.getItem('gsm_nexus_history');
+    if (saved) {
+      try {
+        setHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+  useEffect(() => {
     if (order && order.trackingId) {
       setHistory(prev => {
-        if (prev.includes(order.trackingId)) return prev;
-        return [order.trackingId, ...prev].slice(0, 3);
+        const next = [order.trackingId, ...prev.filter(id => id !== order.trackingId)].slice(0, 5);
+        localStorage.setItem('gsm_nexus_history', JSON.stringify(next));
+        return next;
       });
     }
   }, [order]);
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchVal.trim()) {
-      setSearchParams({ id: searchVal.trim() });
+    const cleanId = searchVal.trim().toUpperCase();
+    if (cleanId) {
+      setSearchParams({ id: cleanId });
     }
   };
-  useEffect(() => {
-    if (initialId) refetch();
-  }, [initialId, refetch]);
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('gsm_nexus_history');
+  };
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
-          <motion.h1
+          <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-display font-bold mb-6"
@@ -61,10 +75,10 @@ export function TrackingPage() {
             Real-time processing updates from our global service infrastructure.
           </p>
         </div>
-        <motion.form
+        <motion.form 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          onSubmit={handleSearch}
+          onSubmit={handleSearch} 
           className="relative max-w-2xl mx-auto mb-20"
         >
           <div className="relative group">
@@ -76,7 +90,7 @@ export function TrackingPage() {
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
                   placeholder="Order ID or IMEI"
-                  className="h-16 pl-14 border-none bg-transparent text-lg font-mono focus-visible:ring-0 placeholder:text-muted-foreground/50"
+                  className="h-16 pl-14 border-none bg-transparent text-lg font-mono focus-visible:ring-0 placeholder:text-muted-foreground/50 uppercase"
                 />
               </div>
               <Button type="submit" className="h-16 px-10 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-md font-bold shadow-lg shadow-cyan-500/20 transition-all">
@@ -96,7 +110,7 @@ export function TrackingPage() {
             </div>
           )}
           {isError && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="glass-premium border-red-500/20 rounded-3xl p-10 text-center max-w-2xl mx-auto shadow-2xl shadow-red-500/5"
@@ -106,7 +120,8 @@ export function TrackingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-3">Service Record Not Found</h3>
               <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-8 leading-relaxed">
-                The specified ID could not be matched. Please ensure you entered the record ID or IMEI correctly.
+                The specified ID could not be matched in our active cache. 
+                Please ensure you entered the record ID or IMEI correctly.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button variant="outline" onClick={() => setSearchVal('')} className="rounded-full px-8 glass-premium">Retry Search</Button>
@@ -117,7 +132,7 @@ export function TrackingPage() {
             </motion.div>
           )}
           {order && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="space-y-8"
@@ -160,9 +175,6 @@ export function TrackingPage() {
                     </div>
                   </div>
                   <div className="p-6 rounded-3xl bg-slate-900 text-white relative overflow-hidden group border border-white/5 shadow-xl">
-                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                      <ExternalLink className="w-20 h-20" />
-                    </div>
                     <h4 className="font-bold mb-2">Support Center</h4>
                     <p className="text-xs text-slate-400 mb-4 leading-relaxed">
                       Our engineers are available on Telegram for enterprise escalations and technical assistance.
@@ -176,27 +188,39 @@ export function TrackingPage() {
             </motion.div>
           )}
           {!initialId && !isLoading && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center py-12 text-center"
             >
               {history.length > 0 && (
                 <div className="w-full max-w-lg mb-12">
-                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center justify-center gap-2">
-                    <History className="w-3 h-3 text-cyan-500" />
-                    Recent Service Records
-                  </h3>
+                  <div className="flex items-center justify-between mb-4 px-2">
+                    <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                      <History className="w-3 h-3 text-cyan-500" />
+                      Recent Service Records
+                    </h3>
+                    <button 
+                      onClick={clearHistory}
+                      className="text-[10px] font-bold uppercase tracking-widest text-red-500/60 hover:text-red-500 flex items-center gap-1 transition-colors"
+                    >
+                      <XCircle className="w-3 h-3" />
+                      Clear
+                    </button>
+                  </div>
                   <div className="flex flex-col gap-2">
                     {history.map(id => (
                       <button
                         key={id}
-                        onClick={() => setSearchParams({ id })}
+                        onClick={() => {
+                          setSearchVal(id);
+                          setSearchParams({ id });
+                        }}
                         className="p-4 glass-premium rounded-2xl flex items-center justify-between group hover:border-cyan-500/50 transition-all border-cyan-500/10 shadow-sm"
                       >
                         <span className="font-mono text-sm font-bold text-cyan-600">{id}</span>
                         <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground group-hover:text-cyan-500 uppercase tracking-widest">
-                          Scan Again
+                          Scan Record
                           <ArrowRight className="w-3 h-3" />
                         </div>
                       </button>
@@ -209,7 +233,7 @@ export function TrackingPage() {
                   <ShieldCheck className="w-10 h-10 opacity-30" />
                 </div>
                 <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
-                  All service records are protected by industry-standard encryption and kept for 30 days.
+                  All service records are protected by industry-standard encryption and persisted in your local secure vault.
                 </p>
               </div>
             </motion.div>

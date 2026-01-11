@@ -1,8 +1,23 @@
 import { ApiResponse, Service, ServiceCategory, Order } from "../../shared/types"
 import { MOCK_SERVICES, MOCK_CATEGORIES } from "../../shared/mock-data"
 const SIMULATED_DELAY = 600;
-// Internal mock state for orders
-const MOCK_ORDERS: Order[] = [];
+const STORAGE_KEY = 'gsm_nexus_orders';
+// Helper to manage persistent mock orders
+const getPersistentOrders = (): Order[] => {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return [];
+  try {
+    return JSON.parse(saved);
+  } catch (e) {
+    console.error('Failed to parse orders from storage', e);
+    return [];
+  }
+};
+const saveOrderToStorage = (order: Order) => {
+  const current = getPersistentOrders();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...current, order]));
+};
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY));
   if (Math.random() < 0.001) {
@@ -57,17 +72,21 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
       updatedAt: Date.now(),
       trackingId: `NEX-${Math.floor(100000 + Math.random() * 900000)}`
     };
-    MOCK_ORDERS.push(newOrder);
+    saveOrderToStorage(newOrder);
     return newOrder as unknown as T;
   }
   // GET /api/orders/:trackingId
   if (pathname.startsWith('/api/orders/')) {
-    const idOrTracking = pathname.split('/').pop();
-    const order = MOCK_ORDERS.find(o => o.trackingId === idOrTracking || o.id === idOrTracking);
+    const idOrTracking = pathname.split('/').pop()?.trim().toUpperCase();
+    const orders = getPersistentOrders();
+    const order = orders.find(o => 
+      o.trackingId.toUpperCase() === idOrTracking || 
+      o.id.toUpperCase() === idOrTracking
+    );
     if (!order) throw new Error('Order record not found');
     return order as unknown as T;
   }
-  // Fallback to real fetch (unused in this mock environment)
+  // Fallback to real fetch
   const res = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
     ...init
@@ -94,7 +113,7 @@ export const getServices = (params?: { category?: string | string[]; q?: string 
 };
 export const getCategories = () => api<ServiceCategory[]>('/api/categories');
 export const getServiceById = (id: string) => api<Service>(`/api/services/${id}`);
-export const createOrder = (orderData: { customerEmail: string; serviceId: string; formData: Record<string, string> }) => 
+export const createOrder = (orderData: { customerEmail: string; serviceId: string; formData: Record<string, string> }) =>
   api<Order>('/api/orders', {
     method: 'POST',
     body: JSON.stringify(orderData)
